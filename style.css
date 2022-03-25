@@ -1,0 +1,94 @@
+body {
+    background-color: white;
+    margin: auto;
+    font-family: Helvetica;
+}
+div.nav {
+    width: 99%;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    text-align: right;
+}
+div.nav a:link, div.nav a:visited {
+    color: navy;
+    border-style: solid;
+    border-radius: 10px;
+    padding: 5px;
+}
+div.nav a:hover, div.nav a:active {
+    color: lightblue;
+    background-color: navy;
+    border-style: solid;
+    border-radius: 10px;
+    padding: 5px;
+}
+div.posts {
+    border-top-left-radius: 50px;
+    margin-left: 50px;
+    margin-bottom: 3px;
+    padding-top: 10px;
+    padding-bottom: 1px;
+    background-color: blue;
+}
+p.time {
+    margin-left: 20px;
+    margin-top: 22px;
+    color: white;
+    font-style: italic;
+    font-size: 10px;
+}
+h1 {
+    margin-left: 20px;
+    margin-top: 10px;
+    width: 300px;
+}
+p.content {
+    margin-left: 30px;
+    width: 600px;
+    border-bottom-style: solid;
+    border-color: black;
+    border-bottom-width: 2px;
+    padding-bottom: 5px;
+}
+p.content a:link, p.content a:visited {
+    font-size: 12px;
+    margin-left: 4px;
+    text-decoration: underline;
+}
+p.content a:active, p.content a:hover {
+    font-size: 12px;
+    margin-left: 2px;
+    margin-top: 1px;
+    text-decoration: none;
+}
+p.edit {
+    margin-top: -60px;
+    margin-right: 10px;
+    text-align: right;
+}
+a:link, a:visited {
+    color: lightblue;
+    text-decoration: none;
+}
+a:active, a:hover {
+    font-weight: bold;
+    margin-right: -1px;
+    margin-bottom: -1px;
+}
+div.form {
+    width: 600px;
+    padding: 25px;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 50px;
+    background-color: navy;
+}
+div.form label {
+    color: white;
+    font-weight: bold;
+}
+div.form input, div.form textarea{
+    margin-top: 10px;
+    margin-bottom: 20px;
+}
