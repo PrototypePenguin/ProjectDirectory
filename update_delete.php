@@ -1,7 +1,7 @@
 <?php 
 /******************************************************************
  * Author:  Charles Burns
- * Date:    Jan 31, 2022
+ * Date:    Mar 24, 2022
  * Purpose: Allows users to update and delete posts
  ******************************************************************/
 	require ('authenticate.php');
@@ -14,43 +14,43 @@
         $error = filter_input(INPUT_POST, 'error', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     }
 
-    // UPDATE quote if title, content and id are present in POST.
-    if ($_POST && isset($_POST['title']) && isset($_POST['content']) && isset($_POST['id']) && isset($_POST['update_button'])) {
+    // UPDATE quote if PostTitle, PostContent and PostID are present in POST.
+    if ($_POST && isset($_POST['PostTitle']) && isset($_POST['PostContent']) && isset($_POST['PostID']) && isset($_POST['update_button'])) {
         // Sanitize user input to escape HTML entities and filter out dangerous characters.
-        $title   = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $id      = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $PostTitle   = filter_input(INPUT_POST, 'PostTitle', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $PostContent = filter_input(INPUT_POST, 'PostContent', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $PostID      = filter_input(INPUT_POST, 'PostID', FILTER_SANITIZE_NUMBER_INT);
         
-        if ($id == "") {
-            // If id is not a valid int return to homepage
+        if ($PostID == "") {
+            // If PostID is not a valid int return to homepage
             header("Location: home.php");
             exit;
         }
 
         // Build the parameterized SQL query and bind to the above sanitized values.
-        $query     = "UPDATE blog SET title = :title, content = :content WHERE id = :id";
+        $query     = "UPDATE Posts SET PostTitle = :PostTitle, PostContent = :PostContent WHERE PostID = :PostID";
         $statement = $db->prepare($query);
-        $statement->bindValue(':title', $title);
-        $statement->bindValue(':content', $content);
-        $statement->bindValue(':id', $id, PDO::PARAM_INT);
+        $statement->bindValue(':PostTitle', $PostTitle);
+        $statement->bindValue(':PostContent', $PostContent);
+        $statement->bindValue(':PostID', $PostID, PDO::PARAM_INT);
         
-        if (strlen($title) > 140 || strlen($content) > 1000 || trim(strlen($title)) < 1 || trim(strlen($content)) < 1) {
-            // Check if either $title or $content are within their limits
-            if (strlen($title) > 140) {
-                $error = "The title of your post was " . strlen($title) - 140 . " characters too long";
-            } elseif (strlen($title) < 1) {
-                $error = "Your title cannot be empty";
+        if (strlen($PostTitle) > 140 || strlen($PostContent) > 1000 || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
+            // Check if either $PostTitle or $PostContent are within their limits
+            if (strlen($PostTitle) > 140) {
+                $error = "The PostTitle of your post was " . strlen($PostTitle) - 140 . " characters too long";
+            } elseif (strlen($PostTitle) < 1) {
+                $error = "Your PostTitle cannot be empty";
             }
-            // If the title was not too long $error will be null.
-            if ($error == null && strlen($content) > 1000) {
-                $error = "Your post was " . strlen($content) - 1000 . " characters too long";
-            } elseif ($error == null && strlen($content) < 1) {
-                $error = "Your content cannot be empty";
+            // If the PostTitle was not too long $error will be null.
+            if ($error == null && strlen($PostContent) > 1000) {
+                $error = "Your post was " . strlen($PostContent) - 1000 . " characters too long";
+            } elseif ($error == null && strlen($PostContent) < 1) {
+                $error = "Your PostContent cannot be empty";
                 
-            } elseif (strlen($content) > 1000) {
-                $error = $error . " and your post was " . strlen($content) - 1000 . " characters too long";
-            } elseif (strlen($content) < 1) {
-                $error = $error . " and your content cannot be empty";
+            } elseif (strlen($PostContent) > 1000) {
+                $error = $error . " and your post was " . strlen($PostContent) - 1000 . " characters too long";
+            } elseif (strlen($PostContent) < 1) {
+                $error = $error . " and your PostContent cannot be empty";
             }
             $error = $error . ".";
         } elseif ($statement->execute()) {
@@ -62,37 +62,37 @@
         // Redirect after update.
         header("Location: home.php");
         exit;
-    } else if ($_POST && isset($_POST['id']) && isset($_POST['delete_button'])) {
+    } else if ($_POST && isset($_POST['PostID']) && isset($_POST['delete_button'])) {
         // Sanitize user input to escape HTML entities and filter out dangerous characters.
-        $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $PostID = filter_input(INPUT_POST, 'PostID', FILTER_SANITIZE_NUMBER_INT);
 
-        if ($id > 0 && $id != "") {
+        if ($PostID > 0 && $PostID != "") {
             // Build the parameterized SQL query and bind to the above sanitized values.
-            $query     = "DELETE FROM blog WHERE id = :id";
+            $query     = "DELETE FROM Posts WHERE PostID = :PostID";
             $statement = $db->prepare($query);
-            $statement->bindValue(':id', $id, PDO::PARAM_INT);
+            $statement->bindValue(':PostID', $PostID, PDO::PARAM_INT);
 
             $statement->execute();
         }
-        // Return on both good and bad id's
+        // Return on both good and bad PostID's
         header("Location: home.php");
         exit;
         
-    } else if (isset($_GET['id'])) { // Retrieve post to be edited, if id GET parameter is in URL.
-        // Sanitize the id. Like above but this time from INPUT_GET.
-        $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+    } else if (isset($_GET['PostID'])) { // Retrieve post to be edited, if PostID GET parameter is in URL.
+        // Sanitize the PostID. Like above but this time from INPUT_GET.
+        $PostID = filter_input(INPUT_GET, 'PostID', FILTER_SANITIZE_NUMBER_INT);
 
-        if ($id > 0 && $id != "") {
-            // Build the parametrized SQL query using the filtered id.
-            $query     = "SELECT * FROM blog WHERE id = :id LIMIT 1";
+        if ($PostID > 0 && $PostID != "") {
+            // Build the parametrized SQL query using the filtered PostID.
+            $query     = "SELECT * FROM Posts WHERE PostID = :PostID LIMIT 1";
             $statement = $db->prepare($query);
-            $statement->bindValue(':id', $id, PDO::PARAM_INT);
+            $statement->bindValue(':PostID', $PostID, PDO::PARAM_INT);
             
             // Execute the SELECT and fetch the single row returned.
             $statement->execute();
             $quote = $statement->fetch();
         } else {
-            // If the user enters an invalid id return to homepage
+            // If the user enters an invalid PostID return to homepage
             header("Location: home.php");
             exit;
         }
@@ -106,9 +106,9 @@
  <html lang="en">
  <head>
  	<meta charset="utf-8">
- 	<meta name="viewport" content="width=device-width, initial-scale=1">
+ 	<meta name="viewport" PostContent="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="style.css">
- 	<title>Update <?php if(!isset($error)): ?><?= $quote['title'] ?><?php endif ?></title>
+ 	<PostTitle>Update <?php if(!isset($error)): ?><?= $quote['PostTitle'] ?><?php endif ?></PostTitle>
  </head>
  <body>
     <div class="nav">
@@ -118,13 +118,13 @@
         <h1><?= $error ?></h1>
     <?php else: ?>
         <div class="form">
-            <h1>Enter you next blog post!</h1>
-            <form action="update_delete.php?id=<?= $_GET['id'] ?>" method="post">
-                <label for="title">Title:</label><br>
-                <input type="text" id="title" name="title" value="<?= $quote['title'] ?>" autofocus><br>
-                <label for="content">Content:</label><br>
-                <textarea id="content" name="content" rows="5" cols="50"><?= $quote['content'] ?></textarea><br>
-                <input type="hidden" id="id" name="id" value="<?= $quote['id'] ?>">
+            <h1>Enter you next Posts post!</h1>
+            <form action="update_delete.php?PostID=<?= $_GET['PostID'] ?>" method="post">
+                <label for="PostTitle">Title:</label><br>
+                <input type="text" PostID="PostTitle" name="PostTitle" value="<?= $quote['PostTitle'] ?>" autofocus><br>
+                <label for="PostContent">Content:</label><br>
+                <textarea PostID="PostContent" name="PostContent" rows="5" cols="50"><?= $quote['PostContent'] ?></textarea><br>
+                <input type="hidden" id="PostID" name="PostID" value="<?= $quote['PostID'] ?>">
                 <input type="hidden" id="error" name="error" value="<?= $error ?>">
                 <input type="submit" name="update_button" value="Submit">
                 <input type="submit" name="delete_button" value="Delete">

@@ -1,7 +1,7 @@
 <?php 
 /******************************************************************
  * Author:  Charles Burns
- * Date:    Jan 31, 2022
+ * Date:    Mar 24, 2022
  * Accepts $_POST information for the purpose of adding a new entry
  * to the database if it passes validation
  ******************************************************************/
@@ -10,44 +10,46 @@
 
 	$error = null;
 
-	if ($_POST && !empty($_POST['title']) && !empty($_POST['content'])) {
+	if ($_POST && !empty($_POST['PostTitle']) && !empty($_POST['PostContent']) && !empty($_POST['UserID'])) {
         //  Sanitize user input to escape HTML entities and filter out dangerous characters.
-        $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $content = filter_input(INPUT_POST, 'content', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $PostTitle = filter_input(INPUT_POST, 'PostTitle', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $PostContent = filter_input(INPUT_POST, 'PostContent', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $UserID = filter_input(INPUT_POST, 'UserID', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
         
         //  Build the parameterized SQL query and bind to the above sanitized values.
-        $query = "INSERT INTO blog (title, content) VALUES (:title, :content)";
+        $query = "INSERT INTO Posts (PostTitle, PostContent, UserID) VALUES (:PostTitle, :PostContent, :UserID)";
         $statement = $db->prepare($query); // caches the statement on the server side
         
         //  Bind values to the parameters
-        $statement->bindValue(":title", $title);
-        $statement->bindValue(":content", $content);
+        $statement->bindValue(":PostTitle", $PostTitle);
+        $statement->bindValue(":PostContent", $PostContent);
+        $statement->bindValue(":UserID", $UserID);
 
         /*************************************************************************
          * Execute the INSERT.
          * execute() will check for possible SQL injection and remove if necessary
-         * checks that the title and content portions fit in their varchar sizes
+         * checks that the PostTitle and PostContent portions fit in their varchar sizes
          * if the user enters chars that will be sanitized an empty string can
-         * make it this far so it must be check that strings have content
+         * make it this far so it must be check that strings have PostContent
          *************************************************************************/
                 
-        if (strlen($title) > 140 || strlen($content) > 1000 || trim(strlen($title)) < 1 || trim(strlen($content)) < 1) {
-        	// Check if either $title or $content are within their limits
-        	if (strlen($title) > 140) {
-        		$error = "The title of your post was " . strlen($title)-140 . " characters too long";
-        	} elseif (strlen($title) < 1) {
-                $error = "Your title cannot be empty";
+        if (strlen($PostTitle) > 140 || strlen($PostContent) > 1000 || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
+        	// Check if either $PostTitle or $PostContent are within their limits
+        	if (strlen($PostTitle) > 140) {
+        		$error = "The PostTitle of your post was " . strlen($PostTitle)-140 . " characters too long";
+        	} elseif (strlen($PostTitle) < 1) {
+                $error = "Your PostTitle cannot be empty";
             }
-        	// If the title was not too long $error will be null.
-        	if ($error == null && strlen($content) > 1000) {
-        		$error = "Your post was " . strlen($content)-1000 . " characters too long";
-        	} elseif ($error == null && strlen($content) < 1) {
-                $error = "Your content cannot be empty";
-            } elseif (strlen($content) > 1000) {
-        		$error = $error . " and your post was " . strlen($content)-1000 . " characters too long";
-        	} elseif (strlen($content) < 1) {
-                $error = $error . " and your content cannot be empty";
+        	// If the PostTitle was not too long $error will be null.
+        	if ($error == null && strlen($PostContent) > 1000) {
+        		$error = "Your post was " . strlen($PostContent)-1000 . " characters too long";
+        	} elseif ($error == null && strlen($PostContent) < 1) {
+                $error = "Your PostContent cannot be empty";
+            } elseif (strlen($PostContent) > 1000) {
+        		$error = $error . " and your post was " . strlen($PostContent)-1000 . " characters too long";
+        	} elseif (strlen($PostContent) < 1) {
+                $error = $error . " and your PostContent cannot be empty";
             }
         	$error = $error . ".";
         } elseif ($statement->execute()) {
@@ -59,7 +61,7 @@
         }
 
     } else {
-    	$error = "Your post must have content";
+    	$error = "Your post must have PostContent";
     }
  ?>
 

@@ -1,7 +1,7 @@
 <?php 
 /******************************************************************
  * Author:  Charles Burns
- * Date:    Jan 31, 2022
+ * Date:    Mar 24, 2022
  * Purpose: A HTML form that allows the user to enter information
  * and Posts it to the insert page
  ******************************************************************/
@@ -24,12 +24,21 @@
  	<div class="form">
  		<h2>Enter you next blog post!</h2>
  		<form action="insert.php" method="post">
- 			<label for="title">Title</label>
- 			<input type="text" id="title" name="title" autofocus>
- 			<label for="content">Content</label>
- 			<textarea id="content" name="content" rows="5" cols="50"></textarea>
+         <label for="UserID">(Temp) User*</label>
+         <input type="text" name="UserID">
+         <label for="PostType">Post Type</label>
+         <input type="text" name="PostType">
+         <label for="PostDesc">PostDesc</label>
+         <input type="text" name="PostDesc">
+         <label for="PostSubject">PostSubject</label>
+         <input type="text" name="PostSubject">
+ 			<label for="PostTitle">Title*</label>
+ 			<input type="text" id="PostTitle" name="PostTitle" autofocus>
+ 			<label for="PostContent">Content*</label>
+ 			<textarea id="PostContent" name="PostContent" rows="5" cols="50"></textarea>
  			<input type="submit" value="Submit">
  		</form>
+      <p>* input is required</p>
  	</div>
  </body>
  </html>

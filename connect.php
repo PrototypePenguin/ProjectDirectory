@@ -1,11 +1,11 @@
  <?php
 /******************************************************************
  * Author:  Charles Burns
- * Date:    Jan 31, 2022
+ * Date:    Mar 24, 2022
  * Purpose: Creates a connection to the serverside database which
  * contains the Blog table
  ******************************************************************/
-     define('DB_DSN','mysql:host=localhost;dbname=serverside;charset=utf8');
+     define('DB_DSN','mysql:host=localhost;dbname=CBurnsProject;charset=utf8');
      define('DB_USER','serveruser');
      define('DB_PASS','gorgonzola7!');     
      

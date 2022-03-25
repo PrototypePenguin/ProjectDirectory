@@ -1,7 +1,7 @@
 <?php 
 /*********************************************************************
  * Author:  Charles Burns
- * Date:    Jan 31, 2022
+ * Date:    Mar 24, 2022
  * Purpose: Home page for Web Dev 2 - Assignment 3: Blogging with CRUD
  * Shows five most recent plog posts most recent to least
  *********************************************************************/
@@ -10,7 +10,7 @@
     $i = 0;
 
     // Build and prepare SQL String with :id placeholder parameter.
-    $query = "SELECT * FROM blog ORDER BY id DESC LIMIT 5";
+    $query = "SELECT * FROM Posts ORDER BY PostID DESC LIMIT 5";
     $statement = $db->prepare($query);
 
     $statement->execute();
@@ -36,14 +36,14 @@
     	<?php else: ?>
     		<?php while ($row = $statement->fetch()): ?>
     			<div class="posts">
-                <h1><a href="full_post.php?id=<?= $row['id'] ?>"><?= $row['title'] ?></a></h1>
-                <p class="edit"><a href="update_delete.php?id=<?= $row['id'] ?>">edit</a></p>
-    				<p class="time"><?= date("F j, Y, g:i a", strtotime($row['date_time'])) ?></p>
+                <h1><a href="full_post.php?PostID=<?= $row['PostID'] ?>"><?= $row['PostTitle'] ?></a></h1>
+                <p class="edit"><a href="update_delete.php?PostID=<?= $row['PostID'] ?>">edit</a></p>
+    				<p class="time"><?= date("F j, Y, g:i a", strtotime($row['PostTimestamp'])) ?></p>
                 <p class="content">
-                    <?= substr($row['content'], 0, 200) ?>
+                    <?= substr($row['PostContent'], 0, 200) ?>
 
-    					<?php if (strlen($row['content']) > 200): ?>
-                        <a href="full_post.php?id=<?= $row['id'] ?>">Read Full Post</a>
+    					<?php if (strlen($row['PostContent']) > 200): ?>
+                        <a href="full_post.php?PostID=<?= $row['PostID'] ?>">Read Full Post</a>
                     <?php endif ?>
     			</p>
             </div>
