@@ -5,8 +5,8 @@
  * Purpose: Home page for Web Dev 2 - Assignment 3: Blogging with CRUD
  * Shows five most recent plog posts most recent to least
  *********************************************************************/
-	require('connect.php');
-    
+	require('db.php');
+
     $i = 0;
 
     // Build and prepare SQL String with :id placeholder parameter.

@@ -4,8 +4,7 @@
  * Date:    Mar 24, 2022
  * Purpose: Allows users to update and delete posts
  ******************************************************************/
-	require ('authenticate.php');
-    require ('connect.php');
+	require ('db.php');
 
     $error = null;
 
@@ -23,7 +22,7 @@
         
         if ($PostID == "") {
             // If PostID is not a valid int return to homepage
-            header("Location: home.php");
+            header("Location: index.php");
             exit;
         }
 
@@ -60,7 +59,7 @@
         }
         
         // Redirect after update.
-        header("Location: home.php");
+        header("Location: index.php");
         exit;
     } else if ($_POST && isset($_POST['PostID']) && isset($_POST['delete_button'])) {
         // Sanitize user input to escape HTML entities and filter out dangerous characters.
@@ -75,7 +74,7 @@
             $statement->execute();
         }
         // Return on both good and bad PostID's
-        header("Location: home.php");
+        header("Location: index.php");
         exit;
         
     } else if (isset($_GET['PostID'])) { // Retrieve post to be edited, if PostID GET parameter is in URL.
@@ -93,7 +92,7 @@
             $quote = $statement->fetch();
         } else {
             // If the user enters an invalid PostID return to homepage
-            header("Location: home.php");
+            header("Location: index.php");
             exit;
         }
             
@@ -112,7 +111,7 @@
  </head>
  <body>
     <div class="nav">
-        <a href="home.php">Return to Home</a>
+        <a href="index.php">Return to Home</a>
     </div>
     <?php if (isset($error)): ?> <!-- Don't show form if there are errors -->
         <h1><?= $error ?></h1>

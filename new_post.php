@@ -5,8 +5,6 @@
  * Purpose: A HTML form that allows the user to enter information
  * and Posts it to the insert page
  ******************************************************************/
-	require ("authenticate.php"); // Page only available to logged in users.
-	require ("connect.php");
  ?>
 
  <!DOCTYPE html>
@@ -19,7 +17,7 @@
  </head>
  <body>
  	<div class="nav">
- 		<a href="home.php">Return to Home</a>
+ 		<a href="index.php">Return to Home</a>
  	</div>
  	<div class="form">
  		<h2>Enter you next blog post!</h2>

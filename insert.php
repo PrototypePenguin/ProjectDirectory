@@ -5,8 +5,7 @@
  * Accepts $_POST information for the purpose of adding a new entry
  * to the database if it passes validation
  ******************************************************************/
-	require ('authenticate.php');
-	require ('connect.php');
+	require ('db.php');
 
 	$error = null;
 
@@ -54,7 +53,7 @@
         	$error = $error . ".";
         } elseif ($statement->execute()) {
         	// If $statement can execute go to the homepage
-        	header('Location: home.php');
+        	header('Location: index.php');
         	exit;
         } else {
         	$error = "Unhandled Error!";
@@ -77,7 +76,7 @@
  	<div>
         <?php if (isset($error)): ?> <!-- If the user entered invalid data show them the error -->
             <h1><?= $error ?></h1>
-            <a href="home.php">Go back to the homepage.</a>
+            <a href="index.php">Go back to the homepage.</a>
         <?php endif ?>
     </div>
  </body>

@@ -5,7 +5,7 @@
  * Purpose: Allows users to see a single blog post without being
  * truncated
  ******************************************************************/
-    require ('connect.php');
+    require ('db.php');
 
     if ($_GET && !empty($_GET['PostID'])) {
 
@@ -21,11 +21,11 @@
 
             $quote = $statement->fetch();
         } else {
-            header('Location: home.php');
+            header('Location: index.php');
         }
         
     } else {
-        header('Location: home.php');
+        header('Location: index.php');
     }
  ?>
 
@@ -43,7 +43,7 @@
  </head>
  <body>
     <div class="nav">
-        <a href="home.php">Home</a>
+        <a href="index.php">Home</a>
     </div>
     <?php if($statement->rowCount() != 0): ?>
         <div class="posts">
