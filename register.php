@@ -4,7 +4,7 @@
 
 	// Define variables and initialize with empty values
 	$username = $email = $password = $confirm_password = "";
-	$username_err = $password_err = $confirm_password_err = $login_err = "";
+	$username_err = $password_err = $confirm_password_err = $login_err = $email_err = "";
 
 	// Processing form data when form is submitted
 	if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -38,6 +38,33 @@
 			}
 		}
 
+		// Validate email
+		if (empty(trim($_POST['email']))) {
+			$email_err = "Please enter a email.";
+		} else {
+			// Prepare a select statement
+			$query = "SELECT UserID FROM users WHERE Email = :Email";
+
+			if ($statement = $db->prepare($query)) {
+				// Bind variables to the prepared statement as parameters
+				$statement->BindParam(':Email', $email, PDO::PARAM_STR);
+
+				$email = trim($_POST['email']);
+
+				// Atempt to execute the prepared statement
+				if ($statement->execute()) {
+					
+					if ($statement->rowCount() == 1) {
+						$email_err = "This email is already taken.";
+					} else {
+						$email = trim($_POST['email']);
+					}
+				} else {
+					$login_err = "Oops! Something went wrong. Please try again later.";
+				}
+			}
+		}
+
 		// Validate Password
 		if(empty(trim($_POST['password']))) {
 			$password_err = "Please enter a password.";
@@ -61,16 +88,19 @@
 		if (empty($username_err) && empty($password_err) && empty($confirm_password_err)) {
 			
 			// Prepare an insert statement
-			$query = "INSERT INTO users (UserName, Password) VALUES (:UserName, :Password)";
+			$query = "INSERT INTO users (Email, UserName, Password, RoleID) VALUES (:Email, :UserName, :Password, :RoleID)";
 
 			if ($statement = $db->prepare($query)) {
 
 				$param_username = $username;
 				$param_password = password_hash($password, PASSWORD_DEFAULT); // Creates password hash
+				$param_email	= $email;
 
 				// Bind variables to the prepared statement as parameters
+				$statement->BindValue(':Email',	   $param_email, PDO::PARAM_STR);
 				$statement->BindValue(':UserName', $param_username, PDO::PARAM_STR);
 				$statement->BindValue(':Password', $param_password, PDO::PARAM_STR);
+				$statement->BindValue(':RoleID', 8, PDO::PARAM_INT);					// 8 is the lowest level of permission
 
 				// Attempt to execute the prepared statement
 				if($statement->execute()) {
@@ -100,22 +130,22 @@
         <h2>Sign Up</h2>
         <p>Please fill this form to create an account.</p>
         <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
-			<div>
-				<label for="Email">Email</label>
-				<input type="text" name="email" value="<?= $email ?>">
+			<div class="form-group">
+				<label for="email">Email</label>
+				<input type="text" name="email" class="form-control <?= (!empty($email_err)) ? 'is-invalid' : '' ?>" value="<?= $email ?>">
 			</div>
             <div class="form-group">
-                <label>Username</label>
+                <label for="username">Username</label>
                 <input type="text" name="username" class="form-control <?= (!empty($username_err)) ? 'is-invalid' : '' ?>" value="<?= $username; ?>">
                 <span class="invalid-feedback"><?= $username_err ?></span>
             </div>    
             <div class="form-group">
-                <label>Password</label>
+                <label for="password">Password</label>
                 <input type="password" name="password" class="form-control <?= (!empty($password_err)) ? 'is-invalid' : '' ?>" value="<?= $password; ?>">
                 <span class="invalid-feedback"><?= $password_err ?></span>
             </div>
             <div class="form-group">
-                <label>Confirm Password</label>
+                <label for="confirm_password">Confirm Password</label>
                 <input type="password" name="confirm_password" class="form-control <?= (!empty($confirm_password_err)) ? 'is-invalid' : '' ?>" value="<?= $confirm_password; ?>">
                 <span class="invalid-feedback"><?= $confirm_password_err ?></span>
             </div>
