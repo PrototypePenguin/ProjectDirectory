@@ -35,7 +35,7 @@
 		// Validate credentials
 		if(empty($username_err) && empty($password_err)) {
 			//Prepare a select statement
-			$query = "SELECT UserID, UserName, Password FROM users WHERE UserName = :UserName";
+			$query = "SELECT UserID, UserName, RoleID, Password FROM users WHERE UserName = :UserName";
 
 			if($statement = $db->prepare($query)) {
 				// Bind variables to the prepared statement as parameters
@@ -54,6 +54,7 @@
 								// Store data in session variables
 								$_SESSION['loggedin'] = true;
 								$_SESSION['id'] = $quote['UserID'];
+								$_SESSION['role'] = $quote['RoleID'];
 								$_SESSION['username'] = $username;
 
 								// Redirect user to welcome page
@@ -87,6 +88,7 @@
     </style>
 </head>
 <body>
+	<?php include("nav.php"); ?>
     <div class="wrapper">
         <h2>Login</h2>
         <p>Please fill in your credentials to login.</p>

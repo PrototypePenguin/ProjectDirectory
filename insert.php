@@ -5,7 +5,8 @@
  * Accepts $_POST information for the purpose of adding a new entry
  * to the database if it passes validation
  ******************************************************************/
-	require ('db.php');
+	session_start();
+    require ('db.php');
 
 	$error = null;
 
@@ -33,7 +34,7 @@
          * make it this far so it must be check that strings have PostContent
          *************************************************************************/
                 
-        if (strlen($PostTitle) > 140 || strlen($PostContent) > 1000 || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
+        if (strlen($PostTitle) > 140 || strlen($PostContent) > 3000 || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
         	// Check if either $PostTitle or $PostContent are within their limits
         	if (strlen($PostTitle) > 140) {
         		$error = "The PostTitle of your post was " . strlen($PostTitle)-140 . " characters too long";
@@ -41,12 +42,12 @@
                 $error = "Your PostTitle cannot be empty";
             }
         	// If the PostTitle was not too long $error will be null.
-        	if ($error == null && strlen($PostContent) > 1000) {
-        		$error = "Your post was " . strlen($PostContent)-1000 . " characters too long";
+        	if ($error == null && strlen($PostContent) > 3000) {
+        		$error = "Your post was " . strlen($PostContent)-3000 . " characters too long";
         	} elseif ($error == null && strlen($PostContent) < 1) {
                 $error = "Your PostContent cannot be empty";
-            } elseif (strlen($PostContent) > 1000) {
-        		$error = $error . " and your post was " . strlen($PostContent)-1000 . " characters too long";
+            } elseif (strlen($PostContent) > 3000) {
+        		$error = $error . " and your post was " . strlen($PostContent)-3000 . " characters too long";
         	} elseif (strlen($PostContent) < 1) {
                 $error = $error . " and your PostContent cannot be empty";
             }

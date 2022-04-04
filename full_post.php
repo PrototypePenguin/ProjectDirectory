@@ -5,6 +5,7 @@
  * Purpose: Allows users to see a single blog post without being
  * truncated
  ******************************************************************/
+    session_start();
     require ('db.php');
 
     if ($_GET && !empty($_GET['PostID'])) {
@@ -48,9 +49,12 @@
     <?php if($statement->rowCount() != 0): ?>
         <div class="posts">
             <h1><?= $quote['PostTitle'] ?></h1>
-            <p class="edit"><a href="update_delete.php?PostID=<?= $quote['PostID'] ?>">edit</a></p>
+            
+            <?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['role'] == 6 || $_SESSION['role'] == 7): ?>
+                <p class="edit"><a href="update_delete.php?PostID=<?= $row['PostID'] ?>">edit</a></p>
+            <?php endif ?>
 
-            <p class="time"><?= date("F j, Y, g:i a", strtotime($quote['PostTimestamp'])) ?></p><br>
+            <p class="time"><?= date("F j, Y, g:i a", strtotime($quote['PostTimestamp'])) ?></p>
             <p class="content"><?= $quote['PostContent'] ?></p>
         </div>
     <?php endif ?>

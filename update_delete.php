@@ -4,7 +4,9 @@
  * Date:    Mar 24, 2022
  * Purpose: Allows users to update and delete posts
  ******************************************************************/
-	require ('db.php');
+	session_start();
+
+    require ('db.php');
 
     $error = null;
 
@@ -110,6 +112,7 @@
  	<PostTitle>Update <?php if(!isset($error)): ?><?= $quote['PostTitle'] ?><?php endif ?></PostTitle>
  </head>
  <body>
+    <?php include("nav.php"); ?>
     <div class="nav">
         <a href="index.php">Return to Home</a>
     </div>

@@ -77,6 +77,7 @@
     </style>
 </head>
 <body>
+	<?php include("nav.php"); ?>
     <div class="wrapper">
         <h2>Reset Password</h2>
         <p>Please fill out this form to reset your password.</p>

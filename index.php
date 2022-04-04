@@ -5,7 +5,9 @@
  * Purpose: Home page for Web Dev 2 - Assignment 3: Blogging with CRUD
  * Shows five most recent plog posts most recent to least
  *********************************************************************/
-	require('db.php');
+	session_start();
+
+    require('db.php');
 
     $i = 0;
 
@@ -25,20 +27,27 @@
  	<title>Home</title>
  </head>
  <body>
- 	<div class="nav">
-        <a href="new_post.php">New Post</a>
-    </div>
+    <?php include("nav.php"); ?>
+    <?php if ($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['role'] == 6 && isset($_SESSION)): ?>
+     	<div class="nav">
+            <a href="new_post.php">New Post</a>
+        </div>
+    <?php endif ?>
     	<?php if ($statement->rowCount() == 0): ?>
         <div class="posts">
-    			<h1>It's Lonely Over Here!</h1>
-            <p>Be the first to post!</p>
+    			<h1>This page is under construction.</h1>
+            <p>Come back later to see the results!</p>
         </div>
     	<?php else: ?>
     		<?php while ($row = $statement->fetch()): ?>
     			<div class="posts">
                 <h1><a href="full_post.php?PostID=<?= $row['PostID'] ?>"><?= $row['PostTitle'] ?></a></h1>
-                <p class="edit"><a href="update_delete.php?PostID=<?= $row['PostID'] ?>">edit</a></p>
-    				<p class="time"><?= date("F j, Y, g:i a", strtotime($row['PostTimestamp'])) ?></p>
+                
+                <?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['role'] == 6 || $_SESSION['role'] == 7): ?>
+                    <p class="edit"><a href="update_delete.php?PostID=<?= $row['PostID'] ?>">edit</a></p>
+                <?php endif ?>
+
+				<p class="time"><?= date("F j, Y, g:i a", strtotime($row['PostTimestamp'])) ?></p>
                 <p class="content">
                     <?= substr($row['PostContent'], 0, 200) ?>
 
