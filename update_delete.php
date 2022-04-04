@@ -10,6 +10,12 @@
 
     $error = null;
 
+    // Prevents users from simply typing url into address bar
+    if (!isset($_SESSION['role'])) {
+        header("location: index.php");
+    } elseif($_SESSION['role'] == 8 || $_SESSION['role'] == 0) { // 8 is the roleID for the default user role. 0 is the roleID for non logged in users.
+        header("location: index.php");
+    }
     // Updates the $error variable with any errors from the submited form
     if ($_POST && isset($_POST['error'])) {
         $error = filter_input(INPUT_POST, 'error', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -63,7 +69,11 @@
         // Redirect after update.
         header("Location: index.php");
         exit;
-    } else if ($_POST && isset($_POST['PostID']) && isset($_POST['delete_button'])) {
+
+    // Check roles again to prevent injection from someone with edit privileges but not delete
+    } else if ($_POST && isset($_POST['PostID']) && isset($_POST['delete_button']) && 
+        ($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['id'] == $quote['UserID'])) {
+        
         // Sanitize user input to escape HTML entities and filter out dangerous characters.
         $PostID = filter_input(INPUT_POST, 'PostID', FILTER_SANITIZE_NUMBER_INT);
 
@@ -113,9 +123,6 @@
  </head>
  <body>
     <?php include("nav.php"); ?>
-    <div class="nav">
-        <a href="index.php">Return to Home</a>
-    </div>
     <?php if (isset($error)): ?> <!-- Don't show form if there are errors -->
         <h1><?= $error ?></h1>
     <?php else: ?>
@@ -129,7 +136,9 @@
                 <input type="hidden" id="PostID" name="PostID" value="<?= $quote['PostID'] ?>">
                 <input type="hidden" id="error" name="error" value="<?= $error ?>">
                 <input type="submit" name="update_button" value="Submit">
-                <input type="submit" name="delete_button" value="Delete">
+                <?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['id'] == $quote['UserID']): ?>
+                    <input type="submit" name="delete_button" value="Delete">
+                <?php endif ?>
             </form>
         </div>
     <?php endif ?>

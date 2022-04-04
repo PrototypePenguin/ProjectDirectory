@@ -43,9 +43,7 @@
     </title>
  </head>
  <body>
-    <div class="nav">
-        <a href="index.php">Home</a>
-    </div>
+    <?php include("nav.php"); ?>
     <?php if($statement->rowCount() != 0): ?>
         <div class="posts">
             <h1><?= $quote['PostTitle'] ?></h1>

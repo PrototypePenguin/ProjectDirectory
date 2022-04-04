@@ -5,6 +5,7 @@
 	$index = "index.php";
 	$login = "login.php";
 	$logout = "logout.php";
+	$user_controls = "user_controls.php"; // Admin/Moderator only
 
 	if (!isset($_SESSION['role'])) {
         $_SESSION['role'] = 0;
@@ -34,9 +35,9 @@
 
 		<?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5): // Admin User settings ?>
 			<?php if($address.$user_controls != $_SERVER['REQUEST_URI']): ?>
-				<a href="<?= $user_controls ?>">User Settings</a>
+				<a href="<?= $user_controls ?>">User Controls</a>
 			<?php else: ?>
-				<a href="#">User Settings</a>
+				<a href="#">User Controls</a>
 			<?php endif ?>
 		<?php endif ?>
 	</div>

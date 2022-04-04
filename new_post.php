@@ -6,6 +6,12 @@
  * and Posts it to the insert page
  ******************************************************************/
 session_start();
+
+function logincheck(){
+   if ($_SESSION['role'] == 0) {
+      header("location: index.php");
+   }
+}
  ?>
 
  <!DOCTYPE html>
@@ -18,6 +24,7 @@ session_start();
     </head>
     <body>
       <?php include("nav.php"); ?>
+      <?php logincheck(); ?>
     	<div class="nav">
     		<a href="index.php">Return to Home</a>
     	</div>
