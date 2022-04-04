@@ -7,8 +7,11 @@
  *********************************************************************/
 	session_start();
 
-    require('db.php');
+    require('db.php'); // db connection
+    require('values.php'); // constants used throughout website
 
+    // I don't know what this is or if it does anything but I'm leaving it here as a reminder of why well named variables are good.
+    // https://imgflip.com/i/6bdtcr
     $i = 0;
 
     // Build and prepare SQL String with :id placeholder parameter.
@@ -28,7 +31,7 @@
  </head>
  <body>
     <?php include("nav.php"); ?>
-    <?php if ($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['role'] == 6 && isset($_SESSION)): ?>
+    <?php if ($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id && isset($_SESSION)): ?>
      	<div class="nav">
             <a href="new_post.php">New Post</a>
         </div>
@@ -43,7 +46,7 @@
     			<div class="posts">
                 <h1><a href="full_post.php?PostID=<?= $row['PostID'] ?>"><?= $row['PostTitle'] ?></a></h1>
                 
-                <?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['role'] == 6 || $_SESSION['role'] == 7): ?>
+                <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id || $_SESSION['role'] == $VALUES_editor_id): ?>
                     <p class="edit"><a href="update_delete.php?PostID=<?= $row['PostID'] ?>">edit</a></p>
                 <?php endif ?>
 

@@ -9,6 +9,7 @@
  ******************************************************************/
 	session_start();
     require ('db.php');
+    require ('values.php');
 
 	$error = null;
 
@@ -35,27 +36,21 @@
          * if the user enters chars that will be sanitized an empty string can
          * make it this far so it must be check that strings have PostContent
          *************************************************************************/
-        
-        //Max length for $PostTitle
-        $max_title_length = 140;
 
-        //Max length for $PostContent
-        $max_content_length = 3000;
-
-        if (strlen($PostTitle) > $max_title_length || strlen($PostContent) > $max_content_length || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
+        if (strlen($PostTitle) > $VALUES_max_title_length || strlen($PostContent) > $VALUES_max_content_length || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
         	// Check if either $PostTitle or $PostContent are within their limits
-        	if (strlen($PostTitle) > $max_title_length) {
-        		$error = "The PostTitle of your post was " . strlen($PostTitle)-$max_title_length . " characters too long";
+        	if (strlen($PostTitle) > $VALUES_max_title_length) {
+        		$error = "The PostTitle of your post was " . strlen($PostTitle)-$VALUES_max_title_length . " characters too long";
         	} elseif (strlen($PostTitle) < 1) {
                 $error = "Your PostTitle cannot be empty";
             }
         	// If the PostTitle was not too long $error will be null.
-        	if ($error == null && strlen($PostContent) > $max_content_length) {
-        		$error = "Your post was " . strlen($PostContent)-$max_content_length . " characters too long";
+        	if ($error == null && strlen($PostContent) > $VALUES_max_content_length) {
+        		$error = "Your post was " . strlen($PostContent)-$VALUES_max_content_length . " characters too long";
         	} elseif ($error == null && strlen($PostContent) < 1) {
                 $error = "Your PostContent cannot be empty";
-            } elseif (strlen($PostContent) > $max_content_length) {
-        		$error = $error . " and your post was " . strlen($PostContent)-$max_content_length . " characters too long";
+            } elseif (strlen($PostContent) > $VALUES_max_content_length) {
+        		$error = $error . " and your post was " . strlen($PostContent)-$VALUES_max_content_length . " characters too long";
         	} elseif (strlen($PostContent) < 1) {
                 $error = $error . " and your PostContent cannot be empty";
             }

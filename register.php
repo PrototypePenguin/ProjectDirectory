@@ -100,7 +100,7 @@
 				$statement->BindValue(':Email',	   $param_email, PDO::PARAM_STR);
 				$statement->BindValue(':UserName', $param_username, PDO::PARAM_STR);
 				$statement->BindValue(':Password', $param_password, PDO::PARAM_STR);
-				$statement->BindValue(':RoleID', 8, PDO::PARAM_INT);					// 8 is the lowest level of permission
+				$statement->BindValue(':RoleID', $VALUES_user_id, PDO::PARAM_INT);
 
 				// Attempt to execute the prepared statement
 				if($statement->execute()) {

@@ -13,7 +13,7 @@
     // Prevents users from simply typing url into address bar
     if (!isset($_SESSION['role'])) {
         header("location: index.php");
-    } elseif($_SESSION['role'] == 8 || $_SESSION['role'] == 0) { // 8 is the roleID for the default user role. 0 is the roleID for non logged in users.
+    } elseif($_SESSION['role'] == $VALUES_user_id || $_SESSION['role'] == 0) { // 8 is the roleID for the default user role. 0 is the roleID for non logged in users.
         header("location: index.php");
     }
     // Updates the $error variable with any errors from the submited form
@@ -41,21 +41,23 @@
         $statement->bindValue(':PostContent', $PostContent);
         $statement->bindValue(':PostID', $PostID, PDO::PARAM_INT);
         
-        if (strlen($PostTitle) > 140 || strlen($PostContent) > 1000 || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
+        // Check if any values are beyond thier maximums.
+        // If there are any find the problems to provide a detailed error message.
+        if (strlen($PostTitle) > $VALUES_max_title_length || strlen($PostContent) > $VALUES_max_content_length || trim(strlen($PostTitle)) < 1 || trim(strlen($PostContent)) < 1) {
             // Check if either $PostTitle or $PostContent are within their limits
-            if (strlen($PostTitle) > 140) {
-                $error = "The PostTitle of your post was " . strlen($PostTitle) - 140 . " characters too long";
+            if (strlen($PostTitle) > $VALUES_max_title_length) {
+                $error = "The PostTitle of your post was " . strlen($PostTitle) - $VALUES_max_title_length . " characters too long";
             } elseif (strlen($PostTitle) < 1) {
                 $error = "Your PostTitle cannot be empty";
             }
             // If the PostTitle was not too long $error will be null.
-            if ($error == null && strlen($PostContent) > 1000) {
-                $error = "Your post was " . strlen($PostContent) - 1000 . " characters too long";
+            if ($error == null && strlen($PostContent) > $VALUES_max_content_length) {
+                $error = "Your post was " . strlen($PostContent) - $VALUES_max_content_length . " characters too long";
             } elseif ($error == null && strlen($PostContent) < 1) {
                 $error = "Your PostContent cannot be empty";
                 
-            } elseif (strlen($PostContent) > 1000) {
-                $error = $error . " and your post was " . strlen($PostContent) - 1000 . " characters too long";
+            } elseif (strlen($PostContent) > $VALUES_max_content_length) {
+                $error = $error . " and your post was " . strlen($PostContent) - $VALUES_max_content_length . " characters too long";
             } elseif (strlen($PostContent) < 1) {
                 $error = $error . " and your PostContent cannot be empty";
             }
@@ -71,8 +73,7 @@
         exit;
 
     // Check roles again to prevent injection from someone with edit privileges but not delete
-    } else if ($_POST && isset($_POST['PostID']) && isset($_POST['delete_button']) && 
-        ($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['id'] == $quote['UserID'])) {
+    } else if ($_POST && isset($_POST['PostID']) && isset($_POST['delete_button']) && ($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['id'] == $quote['UserID'])) {
         
         // Sanitize user input to escape HTML entities and filter out dangerous characters.
         $PostID = filter_input(INPUT_POST, 'PostID', FILTER_SANITIZE_NUMBER_INT);
@@ -136,7 +137,7 @@
                 <input type="hidden" id="PostID" name="PostID" value="<?= $quote['PostID'] ?>">
                 <input type="hidden" id="error" name="error" value="<?= $error ?>">
                 <input type="submit" name="update_button" value="Submit">
-                <?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['id'] == $quote['UserID']): ?>
+                <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['id'] == $quote['UserID']): ?>
                     <input type="submit" name="delete_button" value="Delete">
                 <?php endif ?>
             </form>
