@@ -41,9 +41,9 @@
     <div id="latest_posts" class="carousel slide" data-bs-ride="carousel">
         <!-- Indicators -->
         <div class="carousel-indicators">
-            <button type="button" data-bs-target="#latest_posts" data-bs-slide-to="0" class="active"></button>
-            <?php for ($i=1; $i < $statement->rowCount(); $i++): ?>
-                <button type="button" data-bs-target="#latest_posts" data-bs-slide-to="<?= $i ?>"></button>
+            <button type="button" data-bs-target="#latest_posts" data-bs-slide="0" class="active"></button>
+            <?php for ($i=2; $i < $limit; $i++): ?>
+                <button type="button" data-bs-target="#latest_posts" data-bs-slide="<?= $i ?>"></button>
             <?php endfor ?>
         </div>
 
@@ -53,22 +53,30 @@
             <p>Come back later to see the results!</p>
         </div>
         <?php else: ?>
-              
-            <!-- The carousel -->
-            <div class="carousel-inner">
-                <?php if($row = $statement->fetch()): ?>
-                    <div class="carousel-item active">
-                        <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="d-block w-100">
-                    </div>
-                    <?php while ($row = $statement->fetch()): ?>
-                        <div class="carousel-item">
-                            <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="d-block w-100">
-                        </div>
-                    <?php endwhile ?>
+            <?php while ($row = $statement->fetch()): ?>
+                <div class="posts">
+                <h1><a href="full_post.php?PostID=<?= $row['PostID'] ?>"><?= $row['PostTitle'] ?></a></h1>
+                
+                <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id || $_SESSION['role'] == $VALUES_editor_id): ?>
+                    <p class="edit"><a href="update_delete.php?PostID=<?= $row['PostID'] ?>">edit</a></p>
                 <?php endif ?>
+                <!-- The carousel -->
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="<?= $row['ImagePath'] ?>" alt="<?= $PostTitle ?>" class="d-block w-100">
+                    </div>
+                </div>
+                <img src="">
+                <p class="time"><?= date("F j, Y, g:i a", strtotime($row['PostTimestamp'])) ?></p>
+                <p class="content">
+                    <?= substr($row['PostContent'], 0, 200) ?>
+
+                        <?php if (strlen($row['PostContent']) > 200): ?>
+                        <a href="full_post.php?PostID=<?= $row['PostID'] ?>">Read Full Post</a>
+                    <?php endif ?>
+                </p>
             </div>
-        </div>
-            
+            <?php endwhile ?>
         <?php endif ?>
         
 

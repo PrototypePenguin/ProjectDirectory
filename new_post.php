@@ -6,6 +6,7 @@
  * and Posts it to the insert page
  ******************************************************************/
 session_start();
+require("values.php");
 
 // If there is not user logged in nav.php will set the $_SESSION['role'] to 0
 // logincheck() prevents the user from accessing the page if they do not have permission
