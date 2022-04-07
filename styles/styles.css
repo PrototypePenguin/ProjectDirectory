@@ -1,0 +1,10 @@
+.carousel-control-prev {
+  left: 0%;
+  top: -45%;
+  position: relative;
+}
+.carousel-control-next {
+  right: -85%;
+  top: -50%;
+  position: relative;
+}

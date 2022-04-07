@@ -9,11 +9,9 @@ session_start();
 require("values.php");
 
 // If there is not user logged in nav.php will set the $_SESSION['role'] to 0
-// logincheck() prevents the user from accessing the page if they do not have permission
-function logincheck(){
-   if ($_SESSION['role'] == 0 || $_SESSION['role'] == $VALUES_user_id || $_SESSION['role'] == $VALUES_editor_id) {
-      header("location: index.php");
-   }
+// Prevent the user from accessing the page if they do not have permission
+if ($_SESSION['role'] == 0 || $_SESSION['role'] == $VALUES_user_id || $_SESSION['role'] == $VALUES_editor_id) {
+   header("location: index.php");
 }
  ?>
 
@@ -27,7 +25,6 @@ function logincheck(){
     </head>
     <body>
       <?php include("nav.php"); ?>
-      <?php logincheck(); ?>
     	<div class="nav">
     		<a href="index.php">Return to Home</a>
     	</div>
