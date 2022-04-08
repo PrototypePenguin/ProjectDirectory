@@ -11,3 +11,4 @@ TODO: 1. Add input filtering and validation for POST/GET
          b. Pagination
          c. Search Posts
          d. Image tied to posts
+      7. Update bootstrap on login/registration pages to match rest of site
