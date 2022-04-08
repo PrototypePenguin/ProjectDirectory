@@ -4,10 +4,23 @@
     require("db.php");
     require("values.php");
 
+
     if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id){
-        $query = "SELECT * FROM Users"
+        if ($_POST && !empty($_POST['user'])) {
+            $query = "SELECT UserName, Email, Address, users.RoleID, RoleName FROM users, roles WHERE users.RoleID = roles.RoleID AND INSTR(UserName, :UserName) <> 0";
+
+
+        }
+        else {
+            $query = "SELECT UserName, Email, Address, users.RoleID, RoleName FROM users, roles WHERE users.RoleID = roles.RoleID";
+        }
+
         $statement = $db->prepare($query);
-    
+        
+        if ($_POST && !empty($_POST['user'])) {
+            $statement->bindValue(":UserName", $_POST['user'], PDO::PARAM_STR);
+        }
+
         $statement->execute();
     } 
     else {
@@ -26,10 +39,45 @@
  	<title>Admin User Controls</title>
  </head>
  <body>
-    <div class="container-fluid">
+    <div class="container">
         <div class="row">
-            <div class="col-sm-6">
-                
+            <?php require("nav.php"); ?>
+        </div>
+        <div class="row">
+            <form action="user_controls.php" method="post">
+                <div class="mb-3 mt-3">
+                    <label for="user" class="form-label">User:</label>
+                    <input type="text" name="user" id="user" class="form-control" placeholder="Find a specific user!">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+        <div class="row">
+            <div class="mb-3 mt-3">
+                <h2 style="padding-top: 22px;">Users</h2>
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>UserName</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php while($row = $statement->fetch()): ?>
+                                <tr>
+                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['UserName'] ?></a></td>
+                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['Email'] ?></a></td>
+                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['Address'] ?></a></td>
+                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['RoleName'] ?></a></td>
+                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>">edit</a></td>
+                                </tr>
+                            <?php endwhile ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         
