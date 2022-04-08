@@ -1,7 +1,7 @@
 <?php 
 	// Include config file
-	require_once "db.php";
-	require("values.php");
+	require_once ('db.php');	//Contains database connection information
+    require ('values.php');		//Contains constant values identified with VALUE_
 
 	// Define variables and initialize with empty values
 	$username = $email = $password = $confirm_password = "";

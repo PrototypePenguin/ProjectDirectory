@@ -6,14 +6,15 @@
  ******************************************************************/
 	session_start();
 
-    require ('db.php');
+    require_once ('db.php');    //Contains database connection information
+    require ('values.php');     //Contains constant values identified with VALUE_
 
     $error = null;
 
     // Prevents users from simply typing url into address bar
     if (!isset($_SESSION['role'])) {
         header("location: index.php");
-    } elseif($_SESSION['role'] == $VALUES_user_id || $_SESSION['role'] == 0) { // 8 is the roleID for the default user role. 0 is the roleID for non logged in users.
+    } elseif($_SESSION['role'] == $VALUES_user_id || $_SESSION['role'] == 0) {
         header("location: index.php");
     }
     // Updates the $error variable with any errors from the submited form

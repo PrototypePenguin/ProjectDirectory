@@ -1,18 +1,18 @@
 <?php 
 	session_start();
 
-    require("db.php");
-    require("values.php");
+    require_once ('db.php');    //Contains database connection information
+    require ('values.php');     //Contains constant values identified with VALUE_
 
 
     if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id){
         if ($_POST && !empty($_POST['user'])) {
-            $query = "SELECT UserName, Email, Address, users.RoleID, RoleName FROM users, roles WHERE users.RoleID = roles.RoleID AND INSTR(UserName, :UserName) <> 0";
+            $query = "SELECT UserID, UserName, Email, Address, users.RoleID, RoleName FROM users, roles WHERE users.RoleID = roles.RoleID AND INSTR(UserName, :UserName) <> 0";
 
 
         }
         else {
-            $query = "SELECT UserName, Email, Address, users.RoleID, RoleName FROM users, roles WHERE users.RoleID = roles.RoleID";
+            $query = "SELECT UserID, UserName, Email, Address, users.RoleID, RoleName FROM users, roles WHERE users.RoleID = roles.RoleID";
         }
 
         $statement = $db->prepare($query);
@@ -68,11 +68,11 @@
                         <tbody>
                             <?php while($row = $statement->fetch()): ?>
                                 <tr>
-                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['UserName'] ?></a></td>
-                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['Email'] ?></a></td>
-                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['Address'] ?></a></td>
-                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>" class="text-decoration-none text-body"><?= $row['RoleName'] ?></a></td>
-                                        <td><a href="user_edit.php?UserName=<?= $row['UserName'] ?>">edit</a></td>
+                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['UserName'] ?></a></td>
+                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['Email'] ?></a></td>
+                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['Address'] ?></a></td>
+                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['RoleName'] ?></a></td>
+                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>">edit</a></td>
                                 </tr>
                             <?php endwhile ?>
                         </tbody>

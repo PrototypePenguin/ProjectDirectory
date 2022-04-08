@@ -7,7 +7,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
-print_r($_SESSION);
 ?>
  
 <!DOCTYPE html>

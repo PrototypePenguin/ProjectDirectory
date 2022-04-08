@@ -7,8 +7,8 @@
  *********************************************************************/
 	session_start();
 
-    require('db.php'); // db connection
-    require('values.php'); // constants used throughout website
+    require_once ('db.php');    //Contains database connection information
+    require ('values.php');     //Contains constant values identified with VALUE_
 
     // Amount of items to grab for the homepage
     $limit = 5;
@@ -32,11 +32,11 @@
  </head>
  <body>
     
-    <?php if ($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id && isset($_SESSION)): ?>
+    <!-- <?php if ($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id && isset($_SESSION)): ?>
      	<div class="nav">
             <a href="new_post.php">New Post</a>
         </div>
-    <?php endif //Ends Authentication Check ?>
+    <?php endif //Ends Authentication Check ?> -->
     <div class="container">
         <div class="row">
             <div class="col-sm-6">

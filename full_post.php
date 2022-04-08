@@ -6,7 +6,9 @@
  * truncated
  ******************************************************************/
     session_start();
-    require ('db.php');
+    
+    require_once ('db.php');    //Contains database connection information
+    require ('values.php');     //Contains constant values identified with VALUE_
 
     if ($_GET && !empty($_GET['PostID'])) {
 

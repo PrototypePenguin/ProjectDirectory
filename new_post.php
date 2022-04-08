@@ -5,8 +5,10 @@
  * Purpose: A HTML form that allows the user to enter information
  * and Posts it to the insert page
  ******************************************************************/
-session_start();
-require("values.php");
+   session_start();
+   
+   require_once ('db.php');   //Contains database connection information
+    require ('values.php');      //Contains constant values identified with VALUE_
 
 // If there is not user logged in nav.php will set the $_SESSION['role'] to 0
 // Prevent the user from accessing the page if they do not have permission

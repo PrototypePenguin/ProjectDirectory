@@ -1,15 +1,15 @@
 <?php 
 	session_start();
 
-	require("db.php");
-	require("values.php");
+	require_once ('db.php');	//Contains database connection information
+    require ('values.php');		//Contains constant values identified with VALUE_
 
 	if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id){
-		$query = "SELECT UserName, Email, Address, RoleID FROM users WHERE :UserName = UserName";
+		$query = "SELECT UserName, Email, Address, RoleID FROM users WHERE :UserID = UserID";
 
 		$statement = $db->prepare($query);
 
-		$statement->bindValue(":UserName", $_GET['UserName'], PDO::PARAM_STR);
+		$statement->bindValue(":UserID", $_GET['UserID'], PDO::PARAM_STR);
 
 		$statement->execute();
 
@@ -34,7 +34,7 @@
  	<link rel="stylesheet" type="text/css" href="styles\styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
- 	<title>Edit <?= $_GET['UserName'] ?></title>
+ 	<title>Edit <?= $_GET['UserID'] ?></title>
  </head>
  <body>
  	<div class="container">
@@ -59,9 +59,9 @@
  				</div>
  				<div class="mb-3 mt-3">
  					<label for="Role" class="form-label">Role:</label>
- 					<select class="form-select">
+ 					<select class="form-select" name="Role">
  						<?php while($row = $row_statement->fetch()): ?>
- 							<option value="<?= $row['RoleName'] ?>" <?php if($quote['RoleID'] == $row['RoleID']): ?>selected<?php endif ?>><?= $row['RoleName'] ?></option>
+ 							<option value="<?= $row['RoleID'] ?>" <?php if($quote['RoleID'] == $row['RoleID']): ?>selected<?php endif ?> id="Role"><?= $row['RoleName'] ?></option>
  						<?php endwhile ?>
  					</select>
  				</div>
@@ -70,6 +70,10 @@
  					<label class="form-check-label" style="padding-bottom: 8px;">Reset Password</label>
  				</div>
  				<button type="submit" class="btn btn-primary">Submit</button>
+ 				<div class="mb-3 mt-3 invisible">
+ 					<label for="UserID" class="form-label invisible">UserID:</label>
+ 					<input type="text" name="UserID" class="form-control invisible" id="UserID" value="<?= $_GET['UserID'] ?>" readonly>
+ 				</div>
 			</form>
 		</div>
  	</div>

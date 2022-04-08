@@ -8,8 +8,8 @@
  * TODO: prevent unauthorized posts from reaching php code.
  ******************************************************************/
 	session_start();
-    require ('db.php');
-    require ('values.php');
+    require_once ('db.php');    //Contains database connection information
+    require ('values.php');     //Contains constant values identified with VALUE_
 
 	$error = null;
 
