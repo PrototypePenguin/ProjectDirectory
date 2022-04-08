@@ -4,8 +4,15 @@
     require("db.php");
     require("values.php");
 
-    $query = "SELECT * FROM Users"
-
+    if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id){
+        $query = "SELECT * FROM Users"
+        $statement = $db->prepare($query);
+    
+        $statement->execute();
+    } 
+    else {
+        header("location: login.php");
+    }
  ?>
 
  <!DOCTYPE html>
