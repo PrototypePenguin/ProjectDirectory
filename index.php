@@ -14,7 +14,7 @@
     $limit = 5;
 
     // Build and prepare SQL String with :id placeholder parameter.
-    $query = "SELECT PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, Images WHERE Posts.SubjectID = Images.SubjectID ORDER BY PostID DESC LIMIT ".$limit;
+    $query = "SELECT PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, Images WHERE Posts.SubjectID = Images.SubjectID AND ImageOrientation = 'portrait' ORDER BY PostID DESC LIMIT ".$limit;
     $statement = $db->prepare($query);
 
     $statement->execute();
@@ -70,19 +70,27 @@
                                 <div class="carousel-item active">
                                     <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="d-block w-100">
                                     <div class="carousel-caption">
-                                        <h3><?= $row['PostTitle'] ?></h3>
-                                        <p><?= substr($row['PostContent'], 0, 300) ?></p>
+                                        <a class="text-light text-decoration-none" href="full_post.php?PostID=<?= $row['PostID'] ?>">
+                                            <h3 class="bg-dark rounded-top mb-0 pb-2 px-3" style="--bs-bg-opacity: .5;"><?= $row['PostTitle'] ?></h3>
+                                        </a>
+                                        <a class="text-light text-decoration-none" href="full_post.php?PostID=<?= $row['PostID'] ?>">
+                                            <p class="bg-dark rounded-bottom px-3" style="--bs-bg-opacity: .5;"><?= substr($row['PostContent'], 0, 300) ?></p>
+                                        </a>
                                     </div>
                                 </div>
                                 <?php while ($row = $statement->fetch()): ?>
                                     <div class="carousel-item">
                                         <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="d-block w-100">
                                         <div class="carousel-caption">
-                                            <h3><?= $row['PostTitle'] ?></h3>
-                                            <p>
-                                                <?= substr($row['PostContent'], 0, 300) ?>
-                                                <?= (strlen($row['PostContent']) <= 300) ?: "..." ; ?>
-                                            </p>
+                                            <a class="text-light text-decoration-none" href="full_post.php?PostID=<?= $row['PostID'] ?>">
+                                                <h3 class="bg-dark rounded-top px-3 mb-0 pb-2" style="--bs-bg-opacity: .5;"><?= $row['PostTitle'] ?></h3>
+                                            </a>
+                                            <a class="text-light text-decoration-none" href="full_post.php?PostID=<?= $row['PostID'] ?>">
+                                                <p class="bg-dark rounded-bottom px-3" style="--bs-bg-opacity: .5;">
+                                                    <?= substr($row['PostContent'], 0, 300) ?>
+                                                    <?= (strlen($row['PostContent']) <= 300) ?: "..." ; ?>
+                                                </p>
+                                            </a>
                                         </div>
                                     </div>
                                 <?php endwhile //No more rows to grab?>

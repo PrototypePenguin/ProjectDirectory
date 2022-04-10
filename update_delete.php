@@ -97,13 +97,30 @@
 
         if ($PostID > 0 && $PostID != "") {
             // Build the parametrized SQL query using the filtered PostID.
-            $query     = "SELECT * FROM Posts WHERE PostID = :PostID LIMIT 1";
+            $query     = "SELECT PostID, UserID, PostTitle, PostCategory, PostDesc, PostContent, PostTimestamp, posts.SubjectID AS SubjectID, subjects.Subject AS Subject FROM posts, subjects WHERE PostID = :PostID AND posts.SubjectID = subjects.SubjectID LIMIT 1";
             $statement = $db->prepare($query);
             $statement->bindValue(':PostID', $PostID, PDO::PARAM_INT);
             
             // Execute the SELECT and fetch the single row returned.
             $statement->execute();
             $quote = $statement->fetch();
+
+            $PostID         = $quote['PostID'];
+            $UserID         = $quote['UserID'];
+            $PostTitle      = $quote['PostTitle'];
+            $PostCategory   = $quote['PostCategory'];
+            $PostDesc       = $quote['PostDesc'];
+            $PostContent    = $quote['PostContent'];
+            $PostTimestamp  = $quote['PostTimestamp'];
+            $SubjectID      = $quote['SubjectID'];
+            $Subject        = $quote['Subject'];
+
+            //Grab information for drop down lists
+            $query = "SELECT SubjectID, Subject FROM subjects";
+
+            $statement = $db->prepare($query);
+
+            $statement->execute();
         } else {
             // If the user enters an invalid PostID return to homepage
             header("Location: index.php");
@@ -120,29 +137,73 @@
  <head>
  	<meta charset="utf-8">
  	<meta name="viewport" PostContent="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="style.css">
- 	<PostTitle>Update <?php if(!isset($error)): ?><?= $quote['PostTitle'] ?><?php endif ?></PostTitle>
+    <link rel="stylesheet" type="text/css" href="styles\styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
  </head>
  <body>
-    <?php include("nav.php"); ?>
-    <?php if (isset($error)): ?> <!-- Don't show form if there are errors -->
-        <h1><?= $error ?></h1>
-    <?php else: ?>
-        <div class="form">
-            <h1>Enter you next Posts post!</h1>
-            <form action="update_delete.php?PostID=<?= $_GET['PostID'] ?>" method="post">
-                <label for="PostTitle">Title:</label><br>
-                <input type="text" PostID="PostTitle" name="PostTitle" value="<?= $quote['PostTitle'] ?>" autofocus><br>
-                <label for="PostContent">Content:</label><br>
-                <textarea PostID="PostContent" name="PostContent" rows="5" cols="50"><?= $quote['PostContent'] ?></textarea><br>
-                <input type="hidden" id="PostID" name="PostID" value="<?= $quote['PostID'] ?>">
-                <input type="hidden" id="error" name="error" value="<?= $error ?>">
-                <input type="submit" name="update_button" value="Submit">
-                <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['id'] == $quote['UserID']): ?>
-                    <input type="submit" name="delete_button" value="Delete">
-                <?php endif ?>
-            </form>
+    <div class="container">
+        <div class="row">
+            <?php include("nav.php"); ?>
         </div>
-    <?php endif ?>
+        <div class="row">
+            <?php if (isset($error)): ?> <!-- Don't show form if there are errors -->
+                <h1><?= $error ?></h1>
+            <?php else: ?>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Update: <?= $quote['PostTitle'] ?></h1>
+                <a href="full_post.php?PostID=<?= $quote['PostID'] ?>"  class="btn btn-light">Go Back to Post</a>
+            </div>
+        </div>
+        <div class="row">
+            <form action="update_delete.php?PostID=<?= $_GET['PostID'] ?>" method="post">
+                <div class="mb-3 mt-3">
+                    <label for="PostTitle" class="form-label">Title:</label>
+                    <input type="text" class="form-control" id="PostTitle" name="PostTitle" value="<?= $quote['PostTitle'] ?>" autofocus>
+                </div>
+                <div class="mb-3">
+                    <label for="PostContent" class="form-label">Content:</label>
+                    <textarea class="form-control" id="PostContent" name="PostContent" rows="5"><?= $quote['PostContent'] ?></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="PostSubject" class="form-label">Subject:</label>
+                    <input class="form-control" list="PostSubjectID" name="Subject" id="Subject">
+                    <datalist id="PostSubjectID">
+                        <?php while ($row = $statement->fetch()): ?>
+                            <option value="<?= $row['SubjectID'] ?>"><?= $row['Subject'] ?></option>
+                        <?php endwhile ?>
+                    </datalist>
+                </div>
+                <div class="mb-3">
+                    <label for="PostDescription" class="form-label">Snippet:</label>
+                    <textarea class="form-control" id="PostDescription" name="PostDescription" rows="3"></textarea>
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="image" class="form-label">Image:</label>
+                    <input type="file" name="image" id="image" class="form-control">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="Subject" class="form-label">Subject:</label>
+                    <input class="form-control" list="Subjects" name="Subject" id="Subject">
+                    <datalist id="Subjects">
+                        <?php while ($row = $statement->fetch()): ?>
+                            <option value="<?= $row['Subject'] ?>"><?= $row['Subject'] ?></option>
+                        <?php endwhile ?>
+                    </datalist>
+                </div>
+                <div class="mb-3">
+                    <input type="hidden" id="error" name="error" value="<?= $error ?>">
+                    <input type="hidden" id="PostID" name="PostID" value="<?= $quote['PostID'] ?>">
+                    <input type="submit" class="btn btn-primary" name="update_button" value="Submit">
+                    <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['id'] == $quote['UserID']): ?>
+                        <input type="submit" class="btn btn-secondary" name="delete_button" value="Delete">
+                    <?php endif ?>
+                </div>
+            </form>
+            <?php endif ?>
+        </div>
+    </div>
  </body>
  </html>

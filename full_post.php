@@ -37,7 +37,9 @@
  <head>
  	<meta charset="utf-8">
  	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles\styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
  	<title>
         <?php if($statement->rowCount() != 0): ?>
             <?= $quote['PostTitle'] ?>
@@ -45,18 +47,28 @@
     </title>
  </head>
  <body>
-    <?php include("nav.php"); ?>
-    <?php if($statement->rowCount() != 0): ?>
-        <div class="posts">
-            <h1><?= $quote['PostTitle'] ?></h1>
-            
-            <?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5 || $_SESSION['role'] == 6 || $_SESSION['role'] == 7): ?>
-                <p class="edit"><a href="update_delete.php?PostID=<?= $row['PostID'] ?>">edit</a></p>
-            <?php endif ?>
-
-            <p class="time"><?= date("F j, Y, g:i a", strtotime($quote['PostTimestamp'])) ?></p>
-            <p class="content"><?= $quote['PostContent'] ?></p>
+    <div class="container">
+        <div class="row">
+            <?php include("nav.php"); ?>
         </div>
-    <?php endif ?>
+        <div class="row">
+            <div class="col-sm-6">
+                <?php if($statement->rowCount() != 0): ?>
+                    <div class="posts">
+                        <h1><?= $quote['PostTitle'] ?></h1>
+                        
+                        <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id || $_SESSION['role'] == $VALUES_editor_id): ?>
+                            <p class="edit"><a href="update_delete.php?PostID=<?= $quote['PostID'] ?>">edit</a></p>
+                        <?php endif ?>
+
+                        <p class="time"><?= date("F j, Y, g:i a", strtotime($quote['PostTimestamp'])) ?></p>
+                        <p class="content"><?= $quote['PostContent'] ?></p>
+                    </div>
+                <?php endif ?>
+            </div>
+        </div>
+    </div>
+    
+
  </body>
  </html>

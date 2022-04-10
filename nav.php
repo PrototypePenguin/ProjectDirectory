@@ -2,10 +2,13 @@
 	$address = "/WEBD-2008/Project/ProjectDirectory/";
 
 	// Contents of navbar for one stop url edits
-	$index = "index.php";
-	$login = "login.php";
-	$logout = "logout.php";
-	$user_controls = "user_controls.php"; // Admin/Moderator only
+	$index 				= "index.php";
+	$posts 				= "posts.php";
+	$login 				= "login.php";
+	$logout 			= "logout.php";
+	$user_controls 		= "user_controls.php"; 		// Admin/Moderator only
+	$subject_controls 	= "subject_controls.php";	// Admin/Moderator only
+	$images				= "images.php";
 
 	if (!isset($_SESSION['role'])) {
         $_SESSION['role'] = 0;
@@ -21,6 +24,15 @@
 			<?php else: ?>
 				<li>
 					<a class="nav-link" href="#">Home</a>
+				</li>
+			<?php endif ?>
+			<?php if($address.$posts != $_SERVER['REQUEST_URI']): // All Posts ?>
+				<li>
+					<a class="nav-link" href="<?= $posts ?>" >Posts</a>
+				</li>
+			<?php else: ?>
+				<li>
+					<a class="nav-link" href="#">Posts</a>
 				</li>
 			<?php endif ?>
 			
@@ -54,6 +66,24 @@
 				<?php else: ?>
 					<li>
 						<a class="nav-link" href="#">User Controls</a>
+					</li>
+				<?php endif ?>
+				<?php if($address.$subject_controls != $_SERVER['REQUEST_URI']): ?>
+					<li>
+						<a class="nav-link" href="<?= $subject_controls ?>">Subject Controls</a>
+					</li>
+				<?php else: ?>
+					<li>
+						<a class="nav-link" href="#">Subject Controls</a>
+					</li>
+				<?php endif ?>
+				<?php if($address.$images != $_SERVER['REQUEST_URI']): ?>
+					<li>
+						<a class="nav-link" href="<?= $images ?>">images</a>
+					</li>
+				<?php else: ?>
+					<li>
+						<a class="nav-link" href="#">images</a>
 					</li>
 				<?php endif ?>
 			<?php endif ?>
