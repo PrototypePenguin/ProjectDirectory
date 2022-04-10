@@ -39,11 +39,6 @@
  <body>
  	<div class="container">
  		<div class="row">
- 			<div class="col-sm-6">
- 				<?php require("nav.php"); ?>
- 			</div>
- 		</div>
- 		<div class="row">
 			<form action="user_update.php" method="post">
  				<div class="mb-3 mt-3">
  					<label for="UserName" class="form-label">UserName:</label>

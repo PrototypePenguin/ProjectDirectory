@@ -105,22 +105,12 @@
             $statement->execute();
             $quote = $statement->fetch();
 
-            $PostID         = $quote['PostID'];
-            $UserID         = $quote['UserID'];
-            $PostTitle      = $quote['PostTitle'];
-            $PostCategory   = $quote['PostCategory'];
-            $PostDesc       = $quote['PostDesc'];
-            $PostContent    = $quote['PostContent'];
-            $PostTimestamp  = $quote['PostTimestamp'];
-            $SubjectID      = $quote['SubjectID'];
-            $Subject        = $quote['Subject'];
-
             //Grab information for drop down lists
             $query = "SELECT SubjectID, Subject FROM subjects";
 
-            $statement = $db->prepare($query);
+            $subject_list = $db->prepare($query);
 
-            $statement->execute();
+            $subject_list->execute();
         } else {
             // If the user enters an invalid PostID return to homepage
             header("Location: index.php");
@@ -171,7 +161,7 @@
                     <label for="PostSubject" class="form-label">Subject:</label>
                     <input class="form-control" list="PostSubjectID" name="Subject" id="Subject">
                     <datalist id="PostSubjectID">
-                        <?php while ($row = $statement->fetch()): ?>
+                        <?php while ($row = $subject_list->fetch()): ?>
                             <option value="<?= $row['SubjectID'] ?>"><?= $row['Subject'] ?></option>
                         <?php endwhile ?>
                     </datalist>
@@ -185,13 +175,12 @@
                     <input type="file" name="image" id="image" class="form-control">
                 </div>
                 <div class="mb-3 mt-3">
-                    <label for="Subject" class="form-label">Subject:</label>
-                    <input class="form-control" list="Subjects" name="Subject" id="Subject">
-                    <datalist id="Subjects">
-                        <?php while ($row = $statement->fetch()): ?>
-                            <option value="<?= $row['Subject'] ?>"><?= $row['Subject'] ?></option>
-                        <?php endwhile ?>
-                    </datalist>
+                    <select>
+                        <?php  ?>
+                    </select>
+                    <select>
+                        <?php  ?>
+                    </select>
                 </div>
                 <div class="mb-3">
                     <input type="hidden" id="error" name="error" value="<?= $error ?>">

@@ -1,12 +1,15 @@
 <?php
-// WEBD-2008 Challenge 7 Part 3
-// By: Charles Burns
-// March 11 2022
 	session_start();
 
-   require_once ('db.php');    //Contains database connection information
+	require_once ('db.php');    //Contains database connection information
    require ('values.php');     //Contains constant values identified with VALUE_
 
+	require 'C:\xampp\htdocs\a\php-image-resize-master\lib\ImageResize.php';
+	require 'C:\xampp\htdocs\a\php-image-resize-master\lib\ImageResizeException.php';
+
+	$success = false;	//success will become true if image uploads successfully
+
+	use \Gumlet\ImageResize;
 	// Checks if the upload matches required file types
 	function filetype_check($temporary_path, $new_path) {
 		$allowed_mime_types			= ['image/gif', 'image/jpg', 'image/jpeg', 'image/png', 'image/webp'];
@@ -56,88 +59,34 @@
 		}
 
 		if ($upload_status === 1) {
-			//Check whether to grab existing ID or to create new one
-			if (isset($_POST['Subject'])) {
-				$subject = filter_input(INPUT_POST, 'Subject', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+			if (move_uploaded_file($_FILES['image']['tmp_name'], $target_image)) {
+				// If not a pdf create thumbnails and low res versions
+				if ($image_file_type != "pdf") {
 
-				$query = "SELECT SubjectID FROM subjects WHERE Subject = :Subject";
-
-				$statement = $db->prepare($query);
-
-				$statement->bindValue(':Subject', $subject, PDO::PARAM_STR);
-
-				$statement->execute();
-
-				if ($statement->rowCount() == 1) {
-					$subject_id = $statement->fetch()['SubjectID'];
-
-				} elseif ($statement->rowCount() == 0) {
-					$query = "INSERT INTO subjects (Subject) VALUES (:Subject)";
-
-					$statement = $db->prepare($query);
-
-					$statement->bindValue(':Subject', $subject, PDO::PARAM_STR);
-
-					$statement->execute();
-
-					$query = "SELECT SubjectID FROM subjects WHERE Subject = (:Subject)";
-
-					$statement = $db->prepare($query);
-
-					$statement->bindValue(':Subject', $subject, PDO::PARAM_STR);
-
-					$statement->execute();
-
-					$subject_id = $statement->fetch()['SubjectID'];
-				} else {
-					//Error for multiple subjects returned will be set in Add Files if/else block
+					$image = new ImageResize($target_image);
 					
-					$subject_id = -1;
+					// Chained image resize
+					$image
+						// Create a smaller version of the image
+						->resizeToWidth(400)
+						->save($target_directory . $_FILES['image']['name'] . "_medium." . $image_file_type)
+
+						// Create a version of the image for thumbnails
+						->resizeToWidth(50)
+						->save($target_directory . $_FILES['image']['name'] . "_thumbnail." . $image_file_type)
+					;
+
+					$success = true;
 				}
-
-				//Determine the orientation of a file to help maintain site cohesion
-				$image_size = getimagesize($_FILES['image']['tmp_name']);
-
-				if ($image_size[0] / $image_size[1] > .6 && $image_size[0] / $image_size[1] < .8) {
-					$image_orientation = "portrait";
-				} elseif ($image_size[0] / $image_size[1] > 1.3 && $image_size[0] / $image_size[1] < 2.5) {
-					$image_orientation = "landscape";
-				} elseif ($image_size[0] / $image_size[1] > .6 && $image_size[0] / $image_size[1] < 1.5) {
-					$image_orientation = "square";
-				} else {
-					$image_orientation = "extreme";
-				}
-
-				//Add Files
-				if (move_uploaded_file($_FILES['image']['tmp_name'], $target_image) && $subject_id != -1) {
-					
-					$query = "INSERT INTO images (ImagePath, SubjectID, ImageOrientation) VALUES (:ImagePath, :SubjectID, :ImageOrientation)";
-
-					$statement = $db->prepare($query);
-
-					$statement->bindValue(':ImagePath', $target_directory.$image_filename, PDO::PARAM_STR);
-					$statement->bindValue(':SubjectID', $subject_id, PDO::PARAM_INT);
-					$statement->bindValue(':ImageOrientation', $image_orientation, PDO::PARAM_STR);
-
-					$statement->execute();
-				} elseif($subject_id == -1) {
-					$error_message = "DB_ERR:Multiple subject entries. Please contact your administrator to correct.";
-				} else {
-	    			// Failed Upload Error handling
-	    			$error_message = "ERR:Upload Failed";
-	  			}
-			}
+			} else {
+    			// Failed Upload Error handling
+    			$error_message = "ERR:Upload Failed";
+  			}
 		} else {
 			// Illegal Upload Error handling
 			$error_message = "ERR:Illegal Upload of type: " . $_FILES['image']['type'];
 		}
 	}
-
-	$query = "SELECT * FROM subjects";
-
-	$statement = $db->prepare($query);
-
-	$statement->execute();
  ?>
 
  <!DOCTYPE html>
@@ -145,37 +94,33 @@
  <head>
  	<meta charset="utf-8">
  	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="styles\styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="styles\styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
- 	<title>File Uploads Part 3</title>
+ 	<title>Image Upload</title>
  </head>
  <body>
  	<div class="container">
  		<div class="row">
-		 	<p>Upload an image that is one of a gif, jpg, webp, or png.</p>
-		 	<form method="post" action="images.php" enctype="multipart/form-data">
-		 		<div class="mb-3 mt-3">
-			 		<label for="image" class="form-label">Image:</label>
-			 		<input type="file" name="image" id="image" class="form-control">
-			 	</div>
-			 	<div class="mb-3 mt-3">
-			 		<label for="Subject" class="form-label">Subject:</label>
-			 		<input class="form-control" list="Subjects" name="Subject" id="Subject">
-			 		<datalist id="Subjects">
-			 			<?php while ($row = $statement->fetch()): ?>
-			 				<option value="<?= $row['Subject'] ?>"><?= $row['Subject'] ?></option>
-			 			<?php endwhile ?>
-			 		</datalist>
-			 	</div>
-			 	<button class="btn btn-primary" type="submit" name="submit" value="Upload Image">Submit</button>
-		 	</form>
-		 	<?php if($upload_status === 0): ?>
-		 		<p style="color: red;">
-		 			<?= $error_message ?>
-		 		</p>
-		 	<?php endif ?>
-	 	</div>
+ 			<p>Upload an image that is one of a gif, jpg, webp, or png.</p>
+	 		<form method="post" action="images.php" enctype="multipart/form-data">
+	 			<label class="form-label" id="image">Image</label>
+	 			<input class="form-control" type="file" name="image">
+	 			<button class="form-control" type="submit" name="submit">Submit</button>
+	 		</form>
+	 		<?php if($upload_status === 0): ?>
+	 			<p style="color: red;">
+	 				<?= $error_message ?>
+	 			</p>
+	 		<?php endif ?>
+	 		<?php if($success): ?>
+	 			<div class="alert alert-success alert-dismissible fixed-bottom">
+    				<button type="button" class="btn-close" data-bs-dismiss="alert" onclick="window.close()"></button>
+    				<strong>Success!</strong> Your image was successfully uploaded.
+  				</div>
+	 		<?php endif ?>
+ 		</div>
  	</div>
+
  </body>
  </html>

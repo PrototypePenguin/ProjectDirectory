@@ -18,5 +18,8 @@ session_start();
         $statement->bindValue(":Subject", $subject, PDO::PARAM_STR);
 
         $statement->execute();
+
+        $_SESSION['form_success'] = true;
+        header("location: subject_controls.php");
     }
  ?>

@@ -68,11 +68,11 @@
                         <tbody>
                             <?php while($row = $statement->fetch()): ?>
                                 <tr>
-                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['UserName'] ?></a></td>
-                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['Email'] ?></a></td>
-                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['Address'] ?></a></td>
-                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>" class="text-decoration-none text-body"><?= $row['RoleName'] ?></a></td>
-                                        <td><a href="user_edit.php?UserID=<?= $row['UserID'] ?>">edit</a></td>
+                                        <td><a class="nav-link text-decoration-none text-body" href="user_edit.php?UserID=<?= $row['UserID'] ?>"><?= $row['UserName'] ?></a></td>
+                                        <td><a class="nav-link text-decoration-none text-body" href="user_edit.php?UserID=<?= $row['UserID'] ?>"><?= $row['Email'] ?></a></td>
+                                        <td><a class="nav-link text-decoration-none text-body" href="user_edit.php?UserID=<?= $row['UserID'] ?>"><?= $row['Address'] ?></a></td>
+                                        <td><a class="nav-link text-decoration-none text-body" href="user_edit.php?UserID=<?= $row['UserID'] ?>"><?= $row['RoleName'] ?></a></td>
+                                        <td><a class="nav-link" href="user_edit.php?UserID=<?= $row['UserID'] ?>">edit</a></td>
                                 </tr>
                             <?php endwhile ?>
                         </tbody>
@@ -80,7 +80,17 @@
                 </div>
             </div>
         </div>
-        
-    </div>
+            <?php if(isset($_SESSION['form_success']) && $_SESSION['form_success'] == true): ?>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="alert alert-success alert-dismissible fixed-bottom">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <strong>Success!</strong> Your user was successfully edited.
+                    </div>
+                </div>
+            </div>
+        <?php endif ?>
+        <?php $_SESSION['form_success'] = false; ?>
+    </div>  
  </body>
  </html>

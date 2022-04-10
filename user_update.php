@@ -68,7 +68,8 @@
 
 	    		$statement->execute();
 
-	    		header("location: user_edit.php?UserID=".$UserID);
+	    		$_SESSION['form_success'] = true;
+	    		header("location: user_controls.php");
 	    	}
     	}
  ?>

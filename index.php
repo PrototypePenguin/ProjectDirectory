@@ -14,7 +14,7 @@
     $limit = 5;
 
     // Build and prepare SQL String with :id placeholder parameter.
-    $query = "SELECT PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, Images WHERE Posts.SubjectID = Images.SubjectID AND ImageOrientation = 'portrait' ORDER BY PostID DESC LIMIT ".$limit;
+    $query = "SELECT Posts.PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, PostSubject, Images WHERE PostSubject.PostID = Posts.PostID AND ImageOrientation = 'portrait' ORDER BY PostID DESC LIMIT ".$limit;
     $statement = $db->prepare($query);
 
     $statement->execute();
@@ -31,12 +31,6 @@
  	<title>Home</title>
  </head>
  <body>
-    
-    <!-- <?php if ($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id && isset($_SESSION)): ?>
-     	<div class="nav">
-            <a href="new_post.php">New Post</a>
-        </div>
-    <?php endif //Ends Authentication Check ?> -->
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
@@ -59,8 +53,12 @@
 
                     <?php if ($statement->rowCount() == 0): ?>
                     <div class="posts">
-                            <h1>This page is under construction.</h1>
-                        <p>Come back later to see the results!</p>
+                        <h1>This page is under construction.</h1>
+                        <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id): // Writer Permissions ?>
+                            <a class="text-decoration-none text-body" href="new_post.php">Start us off with the first post</a>
+                        <?php else: ?>
+                            <p>Come back later to see the results!</p>
+                        <?php endif ?>
                     </div>
                     <?php else: //if there are articles written?>
                           

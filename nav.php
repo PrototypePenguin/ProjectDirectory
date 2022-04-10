@@ -79,11 +79,7 @@
 				<?php endif ?>
 				<?php if($address.$images != $_SERVER['REQUEST_URI']): ?>
 					<li>
-						<a class="nav-link" href="<?= $images ?>">images</a>
-					</li>
-				<?php else: ?>
-					<li>
-						<a class="nav-link" href="#">images</a>
+						<a class="nav-link" href="#" onclick="window.open('<?= $images ?>','name','width=600,height=400')">images</a>
 					</li>
 				<?php endif ?>
 			<?php endif ?>

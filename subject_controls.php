@@ -66,9 +66,9 @@
                         <tbody>
                             <?php while($row = $statement->fetch()): ?>
                                 <tr>
-                                        <td><a href="user_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="text-decoration-none text-body"><?= $row['SubjectID'] ?></a></td>
-                                        <td><a href="user_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="text-decoration-none text-body"><?= $row['Subject'] ?></a></td>
-                                        <td><a href="user_edit.php?SubjectID=<?= $row['SubjectID'] ?>">edit</a></td>
+                                        <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="nav-link text-decoration-none text-body"><?= $row['SubjectID'] ?></a></td>
+                                        <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="nav-link text-decoration-none text-body"><?= $row['Subject'] ?></a></td>
+                                        <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>">edit</a></td>
                                 </tr>
                             <?php endwhile ?>
                         </tbody>
@@ -85,6 +85,13 @@
     			<button type="submit" class="btn btn-primary">Submit</button>
     		</form>
         </div>
+        <?php if(isset($_SESSION['form_success']) && $_SESSION['form_success'] == true): ?>
+            <div class="alert alert-success alert-dismissible fixed-bottom">
+                <button type="button" class="btn-close" data-bs-dismiss="alert" onclick="window.close()"></button>
+                <strong>Success!</strong> Your image was successfully uploaded.
+            </div>
+        <?php endif ?>
+        <?php $_SESSION['form_success'] = false; ?>
     </div>
  </body>
  </html>
