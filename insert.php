@@ -74,26 +74,25 @@
         	$error = $error . ".";
         } elseif ($statement->execute()) {
             // Add the new PostSubject entry
-
-            // Get the new PostID
-            $query = "SELECT PostID, SubjectID FROM posts, subjects WHERE subject = :PostSubject ORDER BY PostTimestamp DESC LIMIT 1";
-
+            $query = "SELECT PostID FROM Posts ORDER BY PostTimestamp DESC LIMIT 1";
             $statement = $db->prepare($query);
-
-            $statement->bindValue(":PostSubject", $PostSubject, PDO::PARAM_STR);
-
             $statement->execute();
-
             $quote = $statement->fetch();
+            $PostID = $quote['PostID'];
+            
+            foreach ($_POST['PostSubject'] as $SubjectID) {
+                
+                $query = "INSERT INTO postsubject (PostID, SubjectID) VALUES (:PostID, :SubjectID)";
 
-            $query = "INSERT INTO postsubject (PostID, SubjectID) VALUES (:PostID, :SubjectID)";
-
-            $statement = $db->prepare($query);
-
-            $statement->bindValue(":PostID", $quote['PostID'], PDO::PARAM_INT);
-            $statement->bindValue(":SubjectID", $quote['SubjectID'], PDO::PARAM_INT);
-
-            $statement->execute();
+                $statement = $db->prepare($query);
+    
+                $statement->bindValue(":PostID", $PostID, PDO::PARAM_INT);
+                $statement->bindValue(":SubjectID", $SubjectID, PDO::PARAM_INT);
+    
+                $statement->execute();
+                
+            }
+            
 
         	// If $statement can execute go to the homepage
         	header("location: posts.php");

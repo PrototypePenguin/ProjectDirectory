@@ -14,7 +14,7 @@
     $limit = 5;
 
     // Build and prepare SQL String with :id placeholder parameter.
-    $query = "SELECT PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, Images WHERE ImageOrientation = 'portrait' AND Posts.ImageID = Images.ImageID ORDER BY PostID DESC LIMIT ".$limit;
+    $query = "SELECT PostID, PostTitle, PostContent, PostTimestamp, ImagePath, Posts.ImageID FROM Posts, Images WHERE Posts.ImageID = Images.ImageID OR Posts.ImageID = null ORDER BY PostID DESC LIMIT ".$limit;
     $statement = $db->prepare($query);
 
     $statement->execute();
@@ -42,7 +42,7 @@
         <div class="row">
             <?php include("nav.php"); ?>
         </div>
-        <div class="row">
+        <div class="row" style="height: 500px;">
             <div class="col-sm-6">
                 <div id="latest_posts" class="carousel slide" data-bs-ride="carousel">
                     <!-- Indicators -->
@@ -67,8 +67,10 @@
                         <!-- The carousel -->
                         <div class="carousel-inner">
                             <?php if($row = $statement->fetch()): ?>
-                                <div class="carousel-item active">
-                                    <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="d-block w-100">
+                                <div class="carousel-item active bg-dark" style="height: 70%; padding-top: 70%; padding-bottom: 70%; box-sizing: border-box; position: relative;">
+                                    <?php if($row['ImageID'] != 6): ?>
+                                        <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="w-100 mx-auto" style="position: absolute; top: 0; left: 0;">
+                                    <?php endif ?>
                                     <div class="carousel-caption">
                                         <a class="text-light text-decoration-none" href="full_post.php?PostID=<?= $row['PostID'] ?>">
                                             <h3 class="bg-dark rounded-top mb-0 pb-2 px-3" style="--bs-bg-opacity: .5;"><?= $row['PostTitle'] ?></h3>
@@ -79,8 +81,8 @@
                                     </div>
                                 </div>
                                 <?php while ($row = $statement->fetch()): ?>
-                                    <div class="carousel-item">
-                                        <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="d-block w-100">
+                                    <div class="carousel-item bg-dark" style="height: 70%; padding-top: 70%; padding-bottom: 70%; box-sizing: border-box; position: relative;">
+                                        <img src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>" class="w-100 mx-auto" style="position: absolute; top: 0; left: 0;">
                                         <div class="carousel-caption">
                                             <a class="text-light text-decoration-none" href="full_post.php?PostID=<?= $row['PostID'] ?>">
                                                 <h3 class="bg-dark rounded-top px-3 mb-0 pb-2" style="--bs-bg-opacity: .5;"><?= $row['PostTitle'] ?></h3>

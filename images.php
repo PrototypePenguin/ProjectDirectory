@@ -85,7 +85,7 @@
 
 					$statement->execute();
 
-					$_SESSION['form_success'] = true;
+					$_SESSION['form_success'] = "images";
 
 					// Return to the page that called the form
 					if (!isset($_COOKIE['Source'])) {

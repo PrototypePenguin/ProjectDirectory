@@ -32,7 +32,7 @@
     }
 
     // Build and prepare SQL String with :id placeholder parameter.
-    $query = "SELECT Posts.PostID AS PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, Images WHERE ImageOrientation = 'portrait' AND Posts.ImageID = Images.ImageID ORDER BY PostID DESC LIMIT ".($current_page-1).",".$limit; 
+    $query = "SELECT Posts.PostID AS PostID, PostTitle, PostContent, PostTimestamp, ImagePath, posts.ImageID FROM Posts, Images WHERE ImageOrientation = 'portrait' AND Posts.ImageID = Images.ImageID ORDER BY PostID DESC LIMIT ".(($current_page-1)*$limit).",".$limit; 
     $statement = $db->prepare($query);
 
     $statement->execute();
@@ -70,7 +70,9 @@
     		<a class="text-decoration-none text-body" href="full_post.php?PostID=<?= $row['PostID'] ?>">
     			<div class="row border-bottom pb-3 mb-3">
         	        <div class="col-16 col-sm-16 col-md-16 col-lg-4 col-xl-4 col-xxl-3">
-        	            <img class="img-fluid" style="max-width: 100%;" src="<?= $row['ImagePath'] ?>">
+        	            <?php if($row['ImageID'] != 6): ?>
+                            <img class="img-fluid" style="max-width: 100%;" src="<?= $row['ImagePath'] ?>">
+                        <?php endif ?>
         	        </div>
         	        <div class="col-16 col-sm-16 col-md-16 col-lg-8 col-xl-8 col-xxl-9">
         	        	<div class="col-16 col-sm-16 col-md-16 col-lg-8 col-xl-8 col-xxl-9">

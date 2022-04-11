@@ -19,7 +19,7 @@ session_start();
 
         $statement->execute();
 
-        $_SESSION['form_success'] = true;
+        $_SESSION['form_success'] = "subject";
 
         if (!empty($_COOKIE['Source'])) {
             header("location: ".$_COOKIE['Source']);

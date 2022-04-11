@@ -16,11 +16,17 @@
       header("location: index.php");
    }
 
-   $query = "SELECT * FROM images, imageSubject, subjects WHERE ImageSubject.ImageID = Images.ImageID AND ImageSubject.SubjectID = Subjects.SubjectID";
+   $query = "SELECT * FROM images";
 
    $statement_img = $db->prepare($query);
 
    $statement_img->execute();
+
+   $query = "SELECT * FROM subjects";
+
+   $statement_subject = $db->prepare($query);
+
+   $statement_subject->execute();
  ?>
 
  <!DOCTYPE html>
@@ -58,12 +64,31 @@
                   <input class="form-control" type="text" id="PostDesc" name="PostDesc" value="<?= (isset($_COOKIE['PostDesc']) ? $_COOKIE['PostDesc'] : "") ?>">
                </div>
                <div class="mb-3 mt-3">
-                  <label class="form-label" for="PostSubject">Post Subject:</label>
-                  <input class="form-control" type="text" id="PostSubject" name="PostSubject" value="<?= (isset($_COOKIE['PostSubject']) ? $_COOKIE['PostSubject'] : "") ?>">
-               </div>
-               <div class="mb-3 mt-3">
                   <label class="form-label" for="PostContent">Content:</label>
                   <textarea class="form-control" id="PostContent" name="PostContent" rows="5" cols="50"> <?= (isset($_COOKIE['PostContent']) ? $_COOKIE['PostContent'] : "") ?></textarea>
+               </div>
+               <div class="mb-3">
+                  <label for="PostSubject" class="form-label">Subject:</label>
+                  <div class="input-group">
+                     <button class="btn btn-primary" type="button" onclick="Subject()">New Subject</button>
+                     <script>
+                        function Subject() {
+                           //Keeps items from disapearing when user decides to add an image.
+                           document.cookie = "PostTitle=" + document.getElementById("PostTitle").value + ";";
+                           document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
+                           document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
+                           document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
+                           document.cookie = "Source=new_post.php";
+
+                           window.location = "subject_controls.php";
+                        }
+                     </script>
+                     <select multiple class="form-select" name="PostSubject[]">
+                        <?php while ($row = $statement_subject->fetch()): ?>
+                           <option value="<?= $row['SubjectID'] ?>" id="PostSubject"><?= $row['Subject'] ?></option>
+                        <?php endwhile ?>
+                     </select>
+                  </div>
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="ImageID">Image:</label>
@@ -103,10 +128,10 @@
             </script>
          </div>
       </div>
-      <?php if($_SESSION['form_success'] == true): ?>
+      <?php if($_SESSION['form_success'] != false): ?>
          <div class="alert alert-success alert-dismissible fixed-bottom">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            <strong>Success!</strong> Your image was successfully uploaded.
+            <strong>Success!</strong> Your <?= ($_SESSION['form_success'] == "images" ? "image" : "") ?> <?= ($_SESSION['form_success'] == "subject" ? "subject" : "") ?> was successfully uploaded.
          </div>
       <?php endif ?>
       <?php $_SESSION['form_success'] = false; ?>

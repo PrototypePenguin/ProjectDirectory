@@ -59,29 +59,35 @@
 			<?php endif ?>
 
 			<?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5): // Admin User settings ?>
-				<?php if($address.$user_controls != $_SERVER['REQUEST_URI']): ?>
-					<li>
-						<a class="nav-link" href="<?= $user_controls ?>">User Controls</a>
-					</li>
-				<?php else: ?>
-					<li>
-						<a class="nav-link" href="#">User Controls</a>
-					</li>
-				<?php endif ?>
-				<?php if($address.$subject_controls != $_SERVER['REQUEST_URI']): ?>
-					<li>
-						<a class="nav-link" href="<?= $subject_controls ?>">Subject Controls</a>
-					</li>
-				<?php else: ?>
-					<li>
-						<a class="nav-link" href="#">Subject Controls</a>
-					</li>
-				<?php endif ?>
-				<?php if($address.$images != $_SERVER['REQUEST_URI']): ?>
-					<li>
-						<a class="nav-link" href="#" onclick="window.open('<?= $images ?>','name','width=600,height=400')">images</a>
-					</li>
-				<?php endif ?>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Admin Controls</a>
+					<ul class="dropdown-menu">
+						<?php if($address.$user_controls != $_SERVER['REQUEST_URI']): ?>
+							<li>
+								<a class="nav-link" href="<?= $user_controls ?>">User Controls</a>
+							</li>
+						<?php else: ?>
+							<li>
+								<a class="nav-link" href="#">User Controls</a>
+							</li>
+						<?php endif ?>
+						<?php if($address.$subject_controls != $_SERVER['REQUEST_URI']): ?>
+							<li>
+								<a class="nav-link" href="<?= $subject_controls ?>">Subject Controls</a>
+							</li>
+						<?php else: ?>
+							<li>
+								<a class="nav-link" href="#">Subject Controls</a>
+							</li>
+						<?php endif ?>
+						<?php if($address.$images != $_SERVER['REQUEST_URI']): ?>
+							<li>
+								<a class="nav-link" href="images.php">images</a>
+							</li>
+						<?php endif ?>
+					</ul>
+				</li>
+				
 			<?php endif ?>
 		</ul>
 		

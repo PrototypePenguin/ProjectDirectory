@@ -12,7 +12,7 @@
 
     if ($_GET && !empty($_GET['PostID'])) {
 
-        $query = "SELECT * FROM Posts WHERE PostID = :PostID LIMIT 1";
+        $query = "SELECT * FROM Posts, Images WHERE PostID = :PostID AND Posts.ImageID = Images.ImageID LIMIT 1";
         $statement = $db->prepare($query);
 
         $PostID = filter_input(INPUT_GET, 'PostID', FILTER_SANITIZE_NUMBER_INT);
@@ -51,6 +51,13 @@
         <div class="row">
             <?php include("nav.php"); ?>
         </div>
+        <?php if ($quote['ImageID'] != 6): ?>
+            <div class="row">
+                <div class="col-sm-6">
+                    <img class="img-fluid" src="<?= $quote['ImagePath'] ?>">
+                </div>
+            </div>
+        <?php endif ?>
         <div class="row">
             <div class="col-sm-6">
                 <?php if($statement->rowCount() != 0): ?>
