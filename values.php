@@ -4,7 +4,7 @@
  * throughout the website.
  *******************************************************************************/
 	$VALUES_max_title_length = 140;
-	$VALUES_max_content_length = 3000;
+	$VALUES_max_content_length = 10000;
 	$VALUES_supended_id = 6;
 	$VALUES_user_id = 5;
 	$VALUES_editor_id = 4;

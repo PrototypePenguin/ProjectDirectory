@@ -14,10 +14,12 @@
     $limit = 5;
 
     // Build and prepare SQL String with :id placeholder parameter.
-    $query = "SELECT Posts.PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, PostSubject, Images WHERE PostSubject.PostID = Posts.PostID AND ImageOrientation = 'portrait' ORDER BY PostID DESC LIMIT ".$limit;
+    $query = "SELECT PostID, PostTitle, PostContent, PostTimestamp, ImagePath FROM Posts, Images WHERE ImageOrientation = 'portrait' AND Posts.ImageID = Images.ImageID ORDER BY PostID DESC LIMIT ".$limit;
     $statement = $db->prepare($query);
 
     $statement->execute();
+
+    echo $statement->rowCount();
  ?>
 
  <!DOCTYPE html>
@@ -94,9 +96,8 @@
                                 <?php endwhile //No more rows to grab?>
                             <?php endif ?>
                         </div>
+                    <?php endif ?>
                 </div>
-                        
-                <?php endif ?>
                 
 
                 <!-- Left and right controls -->

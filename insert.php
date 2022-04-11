@@ -13,22 +13,39 @@
 
 	$error = null;
 
-	if ($_POST && !empty($_POST['PostTitle']) && !empty($_POST['PostContent']) && !empty($_POST['UserID'])) {
+	if ($_POST && !empty($_POST['PostTitle']) && !empty($_POST['PostContent']) && !empty($_POST['UserID']) && !empty($_POST['ImageID']) && !empty($_POST['PostCategory']) && !empty($_POST['PostSubject'])) {
         //  Sanitize user input to escape HTML entities and filter out dangerous characters.
         $PostTitle = filter_input(INPUT_POST, 'PostTitle', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $PostContent = filter_input(INPUT_POST, 'PostContent', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $UserID = filter_input(INPUT_POST, 'UserID', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-
+        $UserID = filter_input(INPUT_POST, 'UserID', FILTER_SANITIZE_NUMBER_INT);
+        $ImageID = filter_input(INPUT_POST, 'ImageID', FILTER_SANITIZE_NUMBER_INT);
+        $PostCategory = filter_input(INPUT_POST, 'PostCategory', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+        $PostSubject = filter_input(INPUT_POST, 'PostSubject', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         
-        //  Build the parameterized SQL query and bind to the above sanitized values.
-        $query = "INSERT INTO Posts (PostTitle, PostContent, UserID) VALUES (:PostTitle, :PostContent, :UserID)";
+        // Build the parameterized SQL query and bind to the above sanitized values.
+        // If a Post Description has been provided add it to the query
+        if (!empty($_POST['PostDesc'])) {
+            $PostDesc = filter_input(INPUT_POST, 'UserID', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            $query = "INSERT INTO Posts (PostTitle, PostDesc, PostCategory, PostContent, UserID, ImageID) VALUES (:PostTitle, :PostDesc, :PostCategory, :PostContent, :UserID, :ImageID)";
+        }
+        else {
+            $query = "INSERT INTO Posts (PostTitle, PostCategory, PostContent, UserID, ImageID) VALUES (:PostTitle, :PostCategory, :PostContent, :UserID, :ImageID)";
+        }
+       
         $statement = $db->prepare($query); // caches the statement on the server side
         
         //  Bind values to the parameters
         $statement->bindValue(":PostTitle", $PostTitle);
         $statement->bindValue(":PostContent", $PostContent);
         $statement->bindValue(":UserID", $UserID);
+        $statement->bindValue(":ImageID", $ImageID);
+        $statement->bindValue(":PostCategory", $PostCategory);
 
+        if (!empty($_POST['PostDesc'])) {
+            $statement->bindValue(":PostDesc", $PostDesc);
+        }
+        
         /*************************************************************************
          * Execute the INSERT.
          * execute() will check for possible SQL injection and remove if necessary
@@ -56,9 +73,31 @@
             }
         	$error = $error . ".";
         } elseif ($statement->execute()) {
+            // Add the new PostSubject entry
+
+            // Get the new PostID
+            $query = "SELECT PostID, SubjectID FROM posts, subjects WHERE subject = :PostSubject ORDER BY PostTimestamp DESC LIMIT 1";
+
+            $statement = $db->prepare($query);
+
+            $statement->bindValue(":PostSubject", $PostSubject, PDO::PARAM_STR);
+
+            $statement->execute();
+
+            $quote = $statement->fetch();
+
+            $query = "INSERT INTO postsubject (PostID, SubjectID) VALUES (:PostID, :SubjectID)";
+
+            $statement = $db->prepare($query);
+
+            $statement->bindValue(":PostID", $quote['PostID'], PDO::PARAM_INT);
+            $statement->bindValue(":SubjectID", $quote['SubjectID'], PDO::PARAM_INT);
+
+            $statement->execute();
+
         	// If $statement can execute go to the homepage
-        	header('Location: index.php');
-        	exit;
+        	header("location: posts.php");
+            exit;
         } else {
         	$error = "Unhandled Error!";
         }

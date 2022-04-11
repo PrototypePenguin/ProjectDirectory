@@ -20,6 +20,11 @@ session_start();
         $statement->execute();
 
         $_SESSION['form_success'] = true;
-        header("location: subject_controls.php");
+
+        if (!empty($_COOKIE['Source'])) {
+            header("location: ".$_COOKIE['Source']);
+        } else {
+            header("location: subject_controls.php");
+        }
     }
  ?>

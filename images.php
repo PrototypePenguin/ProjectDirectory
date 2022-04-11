@@ -76,7 +76,25 @@
 						->save($target_directory . $_FILES['image']['name'] . "_thumbnail." . $image_file_type)
 					;
 
-					$success = true;
+					//Add Image info to database
+					$query = "INSERT INTO images (ImagePath) VALUES (:ImagePath)";
+
+					$statement = $db->prepare($query);
+
+					$statement->bindValue(":ImagePath", $target_directory.$_FILES['image']['name'], PDO::PARAM_STR);
+
+					$statement->execute();
+
+					$_SESSION['form_success'] = true;
+
+					// Return to the page that called the form
+					if (!isset($_COOKIE['Source'])) {
+						header("location: index.php");
+					}
+					else {
+						header("location: ".$_COOKIE['Source']);
+					}
+					
 				}
 			} else {
     			// Failed Upload Error handling
@@ -102,6 +120,11 @@
  <body>
  	<div class="container">
  		<div class="row">
+ 			<div class="col-sm-6">
+ 				<h2>Image Upload</h2>
+ 			</div>
+ 		</div>
+ 		<div class="row">
  			<p>Upload an image that is one of a gif, jpg, webp, or png.</p>
 	 		<form method="post" action="images.php" enctype="multipart/form-data">
 	 			<label class="form-label" id="image">Image</label>
@@ -112,12 +135,6 @@
 	 			<p style="color: red;">
 	 				<?= $error_message ?>
 	 			</p>
-	 		<?php endif ?>
-	 		<?php if($success): ?>
-	 			<div class="alert alert-success alert-dismissible fixed-bottom">
-    				<button type="button" class="btn-close" data-bs-dismiss="alert" onclick="window.close()"></button>
-    				<strong>Success!</strong> Your image was successfully uploaded.
-  				</div>
 	 		<?php endif ?>
  		</div>
  	</div>

@@ -13,34 +13,36 @@
 
     // Prevents users from simply typing url into address bar
     if (!isset($_SESSION['role'])) {
-        header("location: index.php");
+        header("location: posts.php");
     } elseif($_SESSION['role'] == $VALUES_user_id || $_SESSION['role'] == 0) {
-        header("location: index.php");
+        header("location: posts.php");
     }
     // Updates the $error variable with any errors from the submited form
     if ($_POST && isset($_POST['error'])) {
         $error = filter_input(INPUT_POST, 'error', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     }
 
-    // UPDATE quote if PostTitle, PostContent and PostID are present in POST.
-    if ($_POST && isset($_POST['PostTitle']) && isset($_POST['PostContent']) && isset($_POST['PostID']) && isset($_POST['update_button'])) {
+    // UPDATE quote if PostTitle, PostContent, ImageID are present in POST and PostID is in the GET.
+    if ($_POST && isset($_POST['PostTitle']) && isset($_POST['PostContent']) && isset($_GET['PostID']) && isset($_POST['ImageID']) && isset($_POST['update_button'])) {
         // Sanitize user input to escape HTML entities and filter out dangerous characters.
         $PostTitle   = filter_input(INPUT_POST, 'PostTitle', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         $PostContent = filter_input(INPUT_POST, 'PostContent', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        $PostID      = filter_input(INPUT_POST, 'PostID', FILTER_SANITIZE_NUMBER_INT);
+        $PostID      = filter_input(INPUT_GET, 'PostID', FILTER_SANITIZE_NUMBER_INT);
+        $ImageID     = filter_input(INPUT_POST, 'ImageID', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
         
         if ($PostID == "") {
             // If PostID is not a valid int return to homepage
-            header("Location: index.php");
+            header("Location: posts.php");
             exit;
         }
 
         // Build the parameterized SQL query and bind to the above sanitized values.
-        $query     = "UPDATE Posts SET PostTitle = :PostTitle, PostContent = :PostContent WHERE PostID = :PostID";
+        $query     = "UPDATE Posts SET PostTitle = :PostTitle, PostContent = :PostContent, ImageID = :ImageID WHERE PostID = :PostID";
         $statement = $db->prepare($query);
         $statement->bindValue(':PostTitle', $PostTitle);
         $statement->bindValue(':PostContent', $PostContent);
         $statement->bindValue(':PostID', $PostID, PDO::PARAM_INT);
+        $statement->bindValue(':ImageID', $ImageID);
         
         // Check if any values are beyond thier maximums.
         // If there are any find the problems to provide a detailed error message.
@@ -65,12 +67,35 @@
             $error = $error . ".";
         } elseif ($statement->execute()) {
 
+            foreach ($_POST['PostSubject'] as $SubjectID) {
+                $query = "SELECT * FROM postsubject WHERE SubjectID = :SubjectID AND PostID = :PostID";
+
+                $statement = $db->prepare($query);
+
+                $statement->bindValue(":SubjectID", $SubjectID, PDO::PARAM_INT);
+                $statement->bindValue("PostID", $PostID, PDO::PARAM_INT);
+
+                $statement->execute();
+
+                if ($statement->rowCount() == 0) {
+                    $query = "INSERT INTO postsubject (PostID, SubjectID) VALUES (:PostID, :SubjectID)";
+
+                    $statement = $db->prepare($query);
+    
+                    $statement->bindValue(":PostID", $PostID, PDO::PARAM_INT);
+                    $statement->bindValue(":SubjectID", $SubjectID, PDO::PARAM_INT);
+    
+                    $statement->execute();
+                }
+            }
+            
+
+            // Redirect after update.
+            header("Location: full_post.php?PostID=".$PostID);
+
         } else {
             $error = "Unhandled Error!";
         }
-        
-        // Redirect after update.
-        header("Location: index.php");
         exit;
 
     // Check roles again to prevent injection from someone with edit privileges but not delete
@@ -80,6 +105,13 @@
         $PostID = filter_input(INPUT_POST, 'PostID', FILTER_SANITIZE_NUMBER_INT);
 
         if ($PostID > 0 && $PostID != "") {
+            // Delete Child rows in PostSubject
+            $query     = "DELETE FROM PostSubject WHERE PostID = :PostID";
+            $statement = $db->prepare($query);
+            $statement->bindValue(":PostID", $PostID, PDO::PARAM_INT);
+
+            $statement->execute();
+
             // Build the parameterized SQL query and bind to the above sanitized values.
             $query     = "DELETE FROM Posts WHERE PostID = :PostID";
             $statement = $db->prepare($query);
@@ -88,7 +120,7 @@
             $statement->execute();
         }
         // Return on both good and bad PostID's
-        header("Location: index.php");
+        header("Location: posts.php");
         exit;
         
     } else if (isset($_GET['PostID'])) { // Retrieve post to be edited, if PostID GET parameter is in URL.
@@ -97,7 +129,7 @@
 
         if ($PostID > 0 && $PostID != "") {
             // Build the parametrized SQL query using the filtered PostID.
-            $query     = "SELECT PostID, UserID, PostTitle, PostCategory, PostDesc, PostContent, PostTimestamp, posts.SubjectID AS SubjectID, subjects.Subject AS Subject FROM posts, subjects WHERE PostID = :PostID AND posts.SubjectID = subjects.SubjectID LIMIT 1";
+            $query     = "SELECT posts.PostID, UserID, PostTitle, PostCategory, PostDesc, PostContent, postsubject.SubjectID AS SubjectID, Subject, posts.ImageID, ImagePath FROM posts, subjects, postsubject, images WHERE posts.PostID = :PostID AND posts.PostID = postsubject.PostID AND postsubject.SubjectID = subjects.SubjectID AND images.ImageID = posts.ImageID LIMIT 1";
             $statement = $db->prepare($query);
             $statement->bindValue(':PostID', $PostID, PDO::PARAM_INT);
             
@@ -111,9 +143,16 @@
             $subject_list = $db->prepare($query);
 
             $subject_list->execute();
+
+            $query = "SELECT ImageID, ImagePath FROM images";
+
+            $image_list = $db->prepare($query);
+
+            $image_list->execute();
+
         } else {
             // If the user enters an invalid PostID return to homepage
-            header("Location: index.php");
+            header("Location: posts.php");
             exit;
         }
             
@@ -153,34 +192,63 @@
                     <label for="PostTitle" class="form-label">Title:</label>
                     <input type="text" class="form-control" id="PostTitle" name="PostTitle" value="<?= $quote['PostTitle'] ?>" autofocus>
                 </div>
+                <div class="mb-3 mt-3">
+                    <label for="PostCategory" class="form-label">Category:</label>
+                    <input type="text" class="form-control" id="PostCategory" name="PostCategory" value="<?= $quote['PostCategory'] ?>">
+                </div>
                 <div class="mb-3">
                     <label for="PostContent" class="form-label">Content:</label>
                     <textarea class="form-control" id="PostContent" name="PostContent" rows="5"><?= $quote['PostContent'] ?></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="PostSubject" class="form-label">Subject:</label>
-                    <input class="form-control" list="PostSubjectID" name="Subject" id="Subject">
-                    <datalist id="PostSubjectID">
-                        <?php while ($row = $subject_list->fetch()): ?>
-                            <option value="<?= $row['SubjectID'] ?>"><?= $row['Subject'] ?></option>
-                        <?php endwhile ?>
-                    </datalist>
+                    <label for="PostDesc" class="form-label">Snippet:</label>
+                    <textarea class="form-control" id="PostDesc" name="PostDesc" rows="3"><?= $quote['PostDesc'] ?></textarea>
                 </div>
                 <div class="mb-3">
-                    <label for="PostDescription" class="form-label">Snippet:</label>
-                    <textarea class="form-control" id="PostDescription" name="PostDescription" rows="3"></textarea>
+                    <label for="PostSubject" class="form-label">Subject:</label>
+                    <div class="input-group">
+                        <button class="btn btn-primary" type="button" onclick="Subject()">New Subject</button>
+                        <script>
+                            function Subject() {
+                               //Keeps items from disapearing when user decides to add an image.
+                               document.cookie = "PostTitle=" + document.getElementById("PostTitle").value + ";";
+                               document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
+                               document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
+                               document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
+                               document.cookie = "Source=update_delete.php?PostID=" + document.getElementById("PostID").value;
+
+                               window.location = "subject_controls.php";
+                            }
+                        </script>
+                        <select multiple class="form-select" name="PostSubject[]">
+                            <?php while ($row = $subject_list->fetch()): ?>
+                                <option value="<?= $row['SubjectID'] ?>" id="PostSubject" <?php if($quote['SubjectID'] == $row['SubjectID']): ?>selected<?php endif ?>><?= $row['Subject'] ?></option>
+                            <?php endwhile ?>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-3 mt-3">
-                    <label for="image" class="form-label">Image:</label>
-                    <input type="file" name="image" id="image" class="form-control">
-                </div>
-                <div class="mb-3 mt-3">
-                    <select>
-                        <?php  ?>
-                    </select>
-                    <select>
-                        <?php  ?>
-                    </select>
+                <div class="mb-3">
+                    <label for="ImageID" class="form-label">Image:</label>
+                    <div class="input-group">
+                        <button class="btn btn-primary" type="button" onclick="Image()">New Image</button>
+                        <script>
+                            function Image() {
+                               //Keeps items from disapearing when user decides to add an image.
+                               document.cookie = "PostTitle=" + document.getElementById("PostTitle").value + ";";
+                               document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
+                               document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
+                               document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
+                               document.cookie = "Source=update_delete.php?PostID=" + document.getElementById("PostID").value;
+
+                               window.location = "images.php";
+                            }
+                        </script>
+                        <select class="form-select" name="ImageID">
+                            <?php while($row = $image_list->fetch()): ?>
+                                <option value="<?= $row['ImageID'] ?>" id="ImageID"><?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?></option>
+                            <?php endwhile ?>
+                        </select>
+                    </div>
                 </div>
                 <div class="mb-3">
                     <input type="hidden" id="error" name="error" value="<?= $error ?>">
