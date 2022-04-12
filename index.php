@@ -18,8 +18,6 @@
     $statement = $db->prepare($query);
 
     $statement->execute();
-
-    echo $statement->rowCount();
  ?>
 
  <!DOCTYPE html>
@@ -40,7 +38,7 @@
             </div>
         </div>
         <div class="row">
-            <?php include("nav.php"); ?>
+            <?php require("nav.php"); ?>
         </div>
         <div class="row" style="height: 500px;">
             <div class="col-sm-6">

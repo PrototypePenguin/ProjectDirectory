@@ -18,7 +18,8 @@
         $statement = $db->prepare($query);
         
         if ($_POST && !empty($_POST['subject'])) {
-            $statement->bindValue(":Subject", $_POST['subject'], PDO::PARAM_STR);
+            $subject_query = filter_input(INPUT_POST, 'subject', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            $statement->bindValue(":Subject", $subject_query, PDO::PARAM_STR);
         }
 
         $statement->execute();
@@ -36,7 +37,7 @@
     <link rel="stylesheet" type="text/css" href="styles\styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
- 	<title>Admin User Controls</title>
+ 	<title>Admin Subject Controls</title>
  </head>
  <body>
     <div class="container">
@@ -44,9 +45,9 @@
             <?php require("nav.php"); ?>
         </div>
         <div class="row">
-            <form action="user_controls.php" method="post">
+            <form action="subject_controls.php" method="post">
                 <div class="mb-3 mt-3">
-                    <label for="subject" class="form-label">User:</label>
+                    <label for="subject" class="form-label">Subject:</label>
                     <input type="text" name="subject" id="subject" class="form-control" placeholder="Find a specific subject!">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -54,7 +55,7 @@
         </div>
         <div class="row">
             <div class="mb-3 mt-3">
-                <h2 style="padding-top: 22px;">Users</h2>
+                <h2 style="padding-top: 22px;">Subjects<?= ( !isset($_POST['$subject']) ? "" : ": Containing \"".$subject_query."\"") ?></h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
                         <thead>
@@ -76,7 +77,7 @@
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row mb-3">
     		<form action="subject_insert.php" method="post">
     			<div class="mb-3 mt-3">
     				<label for="new_subject" class="form-label">New Subject:</label>

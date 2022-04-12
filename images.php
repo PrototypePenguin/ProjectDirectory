@@ -69,11 +69,11 @@
 					$image
 						// Create a smaller version of the image
 						->resizeToWidth(400)
-						->save($target_directory . $_FILES['image']['name'] . "_medium." . $image_file_type)
+						->save($target_directory.(substr($_FILES['image']['name'], 0, strpos($_FILES['image']['name'], '.'))) . "_medium." . $image_file_type)
 
 						// Create a version of the image for thumbnails
 						->resizeToWidth(50)
-						->save($target_directory . $_FILES['image']['name'] . "_thumbnail." . $image_file_type)
+						->save($target_directory.(substr($_FILES['image']['name'], 0, strpos($_FILES['image']['name'], '.'))) . "_thumbnail." . $image_file_type)
 					;
 
 					//Add Image info to database
@@ -85,14 +85,21 @@
 
 					$statement->execute();
 
+					$query = "SELECT ImageID FROM images ORDER BY ImageID DESC LIMIT 1";
+					$statement = $db->prepare($query);
+					$statement->execute();
+					$quote = $statement->fetch();
+
 					$_SESSION['form_success'] = "images";
+					$_SESSION['ImageID'] = $quote['ImageID'];
 
 					// Return to the page that called the form
-					if (!isset($_COOKIE['Source'])) {
+					if (!isset($_COOKIE['Source']) || $_COOKIE['Source'] == null) {
 						header("location: index.php");
 					}
 					else {
-						header("location: ".$_COOKIE['Source']);
+						$source = $_COOKIE['Source'];
+						header("location: ".$source);
 					}
 					
 				}

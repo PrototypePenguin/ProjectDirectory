@@ -18,7 +18,9 @@
         $statement = $db->prepare($query);
         
         if ($_POST && !empty($_POST['user'])) {
-            $statement->bindValue(":UserName", $_POST['user'], PDO::PARAM_STR);
+            $user_query = filter_input(INPUT_POST, 'user', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+            $statement->bindValue(":UserName", $user_query, PDO::PARAM_STR);
         }
 
         $statement->execute();
@@ -54,7 +56,7 @@
         </div>
         <div class="row">
             <div class="mb-3 mt-3">
-                <h2 style="padding-top: 22px;">Users</h2>
+                <h2 style="padding-top: 22px;">Users<?= ( !isset($_POST['user']) ? "" : ": Containing \"".$user_query."\"") ?></h2>
                 <div class="table-responsive">
                     <table class="table table-striped table-hover">
                         <thead>

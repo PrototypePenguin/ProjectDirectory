@@ -209,15 +209,21 @@
                     <div class="input-group">
                         <button class="btn btn-primary" type="button" onclick="Subject()">New Subject</button>
                         <script>
-                            function Subject() {
+                            //Stores form data in cookies so that off page forms don't undo progress
+                            function StoreFormCookies() {
                                //Keeps items from disapearing when user decides to add an image.
                                document.cookie = "PostTitle=" + document.getElementById("PostTitle").value + ";";
                                document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
                                document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
                                document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
                                document.cookie = "Source=update_delete.php?PostID=" + document.getElementById("PostID").value;
-
-                               window.location = "subject_controls.php";
+                            }
+                            // Opens the subject_control form
+                            function Subject() {
+                                //Stores form data in cookies so that off page forms don't undo progress
+                                StoreFormCookies();
+                                
+                                window.location = "subject_controls.php";
                             }
                         </script>
                         <select multiple class="form-select" name="PostSubject[]">
@@ -232,22 +238,42 @@
                     <div class="input-group">
                         <button class="btn btn-primary" type="button" onclick="Image()">New Image</button>
                         <script>
+                            // Opens the add image form
                             function Image() {
-                               //Keeps items from disapearing when user decides to add an image.
-                               document.cookie = "PostTitle=" + document.getElementById("PostTitle").value + ";";
-                               document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
-                               document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
-                               document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
-                               document.cookie = "Source=update_delete.php?PostID=" + document.getElementById("PostID").value;
-
-                               window.location = "images.php";
+                                //Stores form data in cookies so that off page forms don't undo progress
+                                StoreFormCookies();
+                                
+                                window.location = "images.php";
                             }
                         </script>
-                        <select class="form-select" name="ImageID">
+                        <select class="form-select" name="ImageID" onchange="document.getElementById('delete_image_button').value = this.value">
                             <?php while($row = $image_list->fetch()): ?>
-                                <option value="<?= $row['ImageID'] ?>" id="ImageID"><?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?></option>
+                                <option value="<?= $row['ImageID'] ?>" id="ImageID"
+                                    <?php if(isset($_SESSION['form_success']) && isset($_SESSION['ImageID']) && $_SESSION['form_success'] == "images" && $_SESSION['ImageID'] == $row['ImageID']): ?>
+                                        selected
+                                    <?php elseif((!isset($_SESSION['ImageID']) || $_SESSION['ImageID'] == null) && $row['ImageID'] == $quote['ImageID']): ?>
+                                        selected
+                                    <?php endif ?>
+                                    ><?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?></option>
                             <?php endwhile ?>
                         </select>
+                        <button class="btn btn-primary" id="delete_image_button" value="" type="button" onclick="ImageDelete()">Delete</button>
+                        <script>
+                            function ImageDelete() {
+                                //Stores form data in cookies so that off page forms don't undo progress
+                                StoreFormCookies();
+                                
+                                //onchange on the select ImageID sets the button value to the current index
+                                let selectValue = document.getElementById("delete_image_button").value;
+
+                                if(confirm("Are you sure you want to delete ImageID: " + selectValue) == true && selectValue != 6){
+                                    document.cookie = "ImageIDDelete=" + selectValue;
+                                    window.location = "image_delete.php";
+                                } else if (selectValue == 6) {
+                                    alert("You cannot delete the blank image.");
+                                }
+                            }
+                        </script>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -261,6 +287,15 @@
             </form>
             <?php endif ?>
         </div>
+        <?php if($_SESSION['form_success'] != false): ?>
+            <div class="alert alert-success alert-dismissible fixed-bottom">
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <strong>Success!</strong> Your <?= ($_SESSION['form_success'] == "images" ? "image" : "") ?> <?= ($_SESSION['form_success'] == "subject" ? "subject" : "") ?> was           successfully uploaded.
+            </div>
+            <?php endif ?>
+            <?php
+                $_SESSION['form_success'] = $_SESSION['ImageID'] = false;
+            ?>
     </div>
  </body>
  </html>

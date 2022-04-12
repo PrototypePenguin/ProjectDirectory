@@ -13,6 +13,8 @@
 	if (!isset($_SESSION['role'])) {
         $_SESSION['role'] = 0;
     }
+
+    setcookie("Source", basename($_SERVER['REQUEST_URI']));
  ?>
 <nav class="navbar navbar-expand-sm bg-light">
 	<div class="container-fluid">
@@ -58,7 +60,7 @@
 				<?php endif ?>
 			<?php endif ?>
 
-			<?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 5): // Admin User settings ?>
+			<?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 2): // Admin User settings ?>
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Admin Controls</a>
 					<ul class="dropdown-menu">
