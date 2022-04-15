@@ -40,15 +40,15 @@
 				}
 		}
 		elseif ($statement->rowCount() < 1) {
-			echo "<script>alert('SQL query grabbed no data!');</script>";
+			$error = 'SQL query grabbed no data!';
 		} else {
-			echo "<script>alert('SQL query grabbed more than one row!');</script>";
+			$error = 'SQL query grabbed more than one row!';
 		}
 		
 	} else {
-		echo "<script>alert('No ImagePathDelete Cookie!');</script>";
+		$error = 'No ImagePathDelete Cookie!';
 	}
 	
 
-	//header("location: index.php");
+	header("location: index.php");
  ?>

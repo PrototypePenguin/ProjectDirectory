@@ -159,16 +159,18 @@
     } else {
         $error = "Unhandled Error";
     }
+
+    print_r($_SESSION);
  ?>
 
  <!DOCTYPE html>
  <html lang="en">
  <head>
- 	<meta charset="utf-8">
- 	<meta name="viewport" PostContent="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="styles\styles.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
  </head>
  <body>
     <div class="container">
@@ -246,25 +248,29 @@
                                 window.location = "images.php";
                             }
                         </script>
-                        <select class="form-select" name="ImageID" onchange="document.getElementById('delete_image_button').value = this.value">
+                        <select class="form-select" name="ImageID" id="ImageIDSelect" onchange="getSelectedValue()">
                             <?php while($row = $image_list->fetch()): ?>
                                 <option value="<?= $row['ImageID'] ?>" id="ImageID"
-                                    <?php if(isset($_SESSION['form_success']) && isset($_SESSION['ImageID']) && $_SESSION['form_success'] == "images" && $_SESSION['ImageID'] == $row['ImageID']): ?>
-                                        selected
+                                    <?php if(isset($_SESSION['form_success']) && isset($_SESSION['ImageID'] ) && ($_SESSION['ImageID'] != "") && $_SESSION['form_success'] == "images" && $_SESSION['ImageID'] == $row['ImageID']): ?>
+                                        selected=""
                                     <?php elseif((!isset($_SESSION['ImageID']) || $_SESSION['ImageID'] == null) && $row['ImageID'] == $quote['ImageID']): ?>
-                                        selected
+                                        selected=""
                                     <?php endif ?>
                                     ><?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?></option>
                             <?php endwhile ?>
                         </select>
                         <button class="btn btn-primary" id="delete_image_button" value="" type="button" onclick="ImageDelete()">Delete</button>
                         <script>
+                            function getSelectedValue() {
+                                let selectedValue = document.getElementById('ImageIDSelect').value;
+                                return selectedValue;
+                            }
                             function ImageDelete() {
                                 //Stores form data in cookies so that off page forms don't undo progress
                                 StoreFormCookies();
                                 
                                 //onchange on the select ImageID sets the button value to the current index
-                                let selectValue = document.getElementById("delete_image_button").value;
+                                let selectValue = getSelectedValue();
 
                                 if(confirm("Are you sure you want to delete ImageID: " + selectValue) == true && selectValue != 6){
                                     document.cookie = "ImageIDDelete=" + selectValue;
@@ -294,7 +300,7 @@
             </div>
             <?php endif ?>
             <?php
-                $_SESSION['form_success'] = $_SESSION['ImageID'] = false;
+                if(isset($_SESSION['form_success'])){ $_SESSION['form_success'] = $_SESSION['ImageID'] = false; }
             ?>
     </div>
  </body>
