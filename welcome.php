@@ -17,7 +17,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
-    <title>Welcome</title>
+    <title>Welcome <?= htmlspecialchars($_SESSION["username"]) ?> - The Watcher</title>
     <style>
         body{ font: 14px sans-serif; text-align: center; }
     </style>

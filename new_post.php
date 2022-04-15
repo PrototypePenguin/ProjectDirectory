@@ -37,7 +37,7 @@
       <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
       <link rel="stylesheet" type="text/css" href="styles/styles.css">
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
-    	<title>New Post</title>
+    	<title>New Post - The Watcher</title>
     </head>
     <body>
       <div class="container">

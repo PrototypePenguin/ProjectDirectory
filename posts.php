@@ -39,14 +39,14 @@
  ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
-	<title></title>
+	<title>The Watcher - Posts on mcu news, heroes, villains and movies</title>
 </head>
 <body>
 	<div class="container">
@@ -71,7 +71,7 @@
     			<div class="row border-bottom pb-3 mb-3">
         	        <div class="col-16 col-sm-16 col-md-16 col-lg-4 col-xl-4 col-xxl-3">
         	            <?php if($row['ImageID'] != 6): ?>
-                            <img class="img-fluid" style="max-width: 100%;" src="<?= $row['ImagePath'] ?>">
+                            <img class="img-fluid" style="max-width: 100%;" src="<?= $row['ImagePath'] ?>" alt="<?= $row['PostTitle'] ?>">
                         <?php endif ?>
         	        </div>
         	        <div class="col-16 col-sm-16 col-md-16 col-lg-8 col-xl-8 col-xxl-9">

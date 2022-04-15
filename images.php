@@ -122,7 +122,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
- 	<title>Image Upload</title>
+ 	<title>The Watcher - Image Upload</title>
  </head>
  <body>
  	<div class="container">

@@ -159,8 +159,6 @@
     } else {
         $error = "Unhandled Error";
     }
-
-    print_r($_SESSION);
  ?>
 
  <!DOCTYPE html>
@@ -171,6 +169,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="styles/styles.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> 
+    <title>Edit <?= $quote['PostTitle'] ?> - The Watcher</title>
  </head>
  <body>
     <div class="container">
