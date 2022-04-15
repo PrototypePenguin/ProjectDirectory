@@ -65,6 +65,7 @@
                                 <th>Email</th>
                                 <th>Address</th>
                                 <th>Role</th>
+                                <th> </th>
                             </tr>
                         </thead>
                         <tbody>

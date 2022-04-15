@@ -217,7 +217,7 @@
                                document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
                                document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
                                document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
-                               document.cookie = "Source=update_delete.php?PostID=" + document.getElementById("PostID").value;
+                               document.cookie = "Source=update_delete.php?PostID=" + <?= $PostID ?>;
                             }
                             // Opens the subject_control form
                             function Subject() {
@@ -227,15 +227,15 @@
                                 window.location = "subject_controls.php";
                             }
                         </script>
-                        <select multiple class="form-select" name="PostSubject[]">
+                        <select multiple class="form-select" name="PostSubject" id="PostSubject">
                             <?php while ($row = $subject_list->fetch()): ?>
-                                <option value="<?= $row['SubjectID'] ?>" id="PostSubject" <?php if($quote['SubjectID'] == $row['SubjectID']): ?>selected<?php endif ?>><?= $row['Subject'] ?></option>
+                                <option value="<?= $row['SubjectID'] ?>" <?php if($quote['SubjectID'] == $row['SubjectID']): ?>selected<?php endif ?>><?= $row['Subject'] ?></option>
                             <?php endwhile ?>
                         </select>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label for="ImageID" class="form-label">Image:</label>
+                    <label for="ImageIDSelect" class="form-label">Image:</label>
                     <div class="input-group">
                         <button class="btn btn-primary" type="button" onclick="Image()">New Image</button>
                         <script>
@@ -249,13 +249,19 @@
                         </script>
                         <select class="form-select" name="ImageID" id="ImageIDSelect" onchange="getSelectedValue()">
                             <?php while($row = $image_list->fetch()): ?>
-                                <option value="<?= $row['ImageID'] ?>" id="ImageID"
+                                <option value="<?= $row['ImageID'] ?>"
                                     <?php if(isset($_SESSION['form_success']) && isset($_SESSION['ImageID'] ) && ($_SESSION['ImageID'] != "") && $_SESSION['form_success'] == "images" && $_SESSION['ImageID'] == $row['ImageID']): ?>
                                         selected=""
                                     <?php elseif((!isset($_SESSION['ImageID']) || $_SESSION['ImageID'] == null) && $row['ImageID'] == $quote['ImageID']): ?>
                                         selected=""
                                     <?php endif ?>
-                                    ><?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?></option>
+                                    >
+                                    <?php if($row['ImagePath'] == ""): ?>
+                                        No Image
+                                    <?php else: ?>
+                                        <?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?>
+                                    <?php endif ?>
+                                </option>
                             <?php endwhile ?>
                         </select>
                         <button class="btn btn-primary" id="delete_image_button" value="" type="button" onclick="ImageDelete()">Delete</button>
