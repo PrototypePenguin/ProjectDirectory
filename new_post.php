@@ -53,19 +53,19 @@
             <form action="insert.php" method="post">
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostTitle">Title:</label>
-                  <input class="form-control" type="text" id="PostTitle" name="PostTitle" value="<?= (isset($_COOKIE['PostTitle']) ? $_COOKIE['PostTitle'] : "") ?>" autofocus>
+                  <input class="form-control" type="text" id="PostTitle" name="PostTitle" value="<?= (isset($_COOKIE['PostTitle']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?>" autofocus>
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostCategory">Post Type:</label>
-                  <input class="form-control" type="text" id="PostCategory" name="PostCategory" value="<?= (isset($_COOKIE['PostCategory']) ? $_COOKIE['PostCategory'] : "") ?>">
+                  <input class="form-control" type="text" id="PostCategory" name="PostCategory" value="<?= (isset($_COOKIE['PostCategory']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?>">
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostDesc">Post Description:</label>
-                  <input class="form-control" type="text" id="PostDesc" name="PostDesc" value="<?= (isset($_COOKIE['PostDesc']) ? $_COOKIE['PostDesc'] : "") ?>">
+                  <input class="form-control" type="text" id="PostDesc" name="PostDesc" value="<?= (isset($_COOKIE['PostDesc']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?>">
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostContent">Content:</label>
-                  <textarea class="form-control" id="PostContent" name="PostContent" rows="5" cols="50"> <?= (isset($_COOKIE['PostContent']) ? $_COOKIE['PostContent'] : "") ?></textarea>
+                  <textarea class="form-control" id="PostContent" name="PostContent" rows="5" cols="50"> <?= (isset($_COOKIE['PostContent']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?></textarea>
                </div>
                <div class="mb-3">
                   <label for="PostSubject" class="form-label">Subject:</label>
@@ -115,7 +115,7 @@
                   </div>
                </div>
                <input class="form-control" id="UserID" type="hidden" name="UserID" value="<?= $_SESSION['id'] ?>">
-               <input type="submit" value="Submit">
+               <input class="btn btn-primary" type="submit" value="Submit">
             </form>
             <script>
                   //Delete Cookies after page has loaded so that the page does not perpetually have the same data.

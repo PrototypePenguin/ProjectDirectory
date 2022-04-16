@@ -79,11 +79,11 @@
             $statement->execute();
             $quote = $statement->fetch();
             $PostID = $quote['PostID'];
-            
+
+            $query = "INSERT INTO postsubject (PostID, SubjectID) VALUES (:PostID, :SubjectID)";
+
             foreach ($_POST['PostSubject'] as $SubjectID) {
                 
-                $query = "INSERT INTO postsubject (PostID, SubjectID) VALUES (:PostID, :SubjectID)";
-
                 $statement = $db->prepare($query);
     
                 $statement->bindValue(":PostID", $PostID, PDO::PARAM_INT);
