@@ -59,7 +59,7 @@
 								$_SESSION['username'] = $username;
 
 								// Redirect user to welcome page
-								header("location: welcome.php");
+								header("location: index.php");
 							} else {
 								//Password is not valid, display a generic error message
 								$login_err = "Invalid username or password. password";
@@ -92,31 +92,39 @@
     </style>
 </head>
 <body>
-	<?php include("nav.php"); ?>
-    <div class="wrapper">
-        <h2>Login</h2>
-        <p>Please fill in your credentials to login.</p>
-
-        <?php if(!empty($login_err)): ?>
-            <div class="alert alert-danger"><?= $login_err ?></div>;
-        <?php endif ?>
-
-        <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" name="username" class="form-control <?= (!empty($username_err)) ? 'is-invalid' : '' ?>" value="<?= $username ?>">
-                <span class="invalid-feedback"><?= $username_err ?></span>
-            </div>    
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" class="form-control <?= (!empty($password_err)) ? 'is-invalid' : '' ?>">
-                <span class="invalid-feedback"><?= $password_err ?></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Login">
-            </div>
-            <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
-        </form>
-    </div>
+	<div class="container mb-3">
+		<div class="row">
+			<?php include("nav.php"); ?>
+		</div>
+		<div class="row">
+			<div class="mb-3 mt-3">
+		        <h2>Login</h2>
+		        <p>Please fill in your credentials to login.</p>
+		
+		        <?php if(!empty($login_err)): ?>
+		            <div class="alert alert-danger"><?= $login_err ?></div>;
+		        <?php endif ?>
+		
+		        <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
+		            <div class="mb-3">
+		                <label>Username</label>
+		                <input type="text" name="username" class="form-control <?= (!empty($username_err)) ? 'is-invalid' : '' ?>" value="<?= $username ?>">
+		                <span class="invalid-feedback"><?= $username_err ?></span>
+		            </div>
+		            <div class="mb-3">
+		                <label>Password</label>
+		                <input type="password" name="password" class="form-control <?= (!empty($password_err)) ? 'is-invalid' : '' ?>">
+		                <span class="invalid-feedback"><?= $password_err ?></span>
+		            </div>
+		            <div class="mb-3">
+		                <input type="submit" class="btn btn-primary" value="Login">
+		            </div>
+		            <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+		        </form>
+		    </div>
+		</div>
+	</div>
+	
+    
 </body>
 </html>

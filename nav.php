@@ -29,82 +29,67 @@
 		setcookie("PostContent", "");
 	}
  ?>
-<nav class="navbar navbar-expand-sm bg-light">
-	<div class="container-fluid">
-		<ul class="navbar-nav">
-			<?php if($address.$index != $url): // Home Page ?>
-				<li>
+<div class="col-sm-6 p-3">
+	<img alt="The Watcher" src="images/TheWatcher.png" style="max-width: 100%; height: auto;">
+</div>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+	    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+			<?php if($address.$index != $url): // All Posts ?>
+				<li class="nav-item">
 					<a class="nav-link" href="<?= $index ?>" >Home</a>
 				</li>
 			<?php else: ?>
-				<li>
-					<a class="nav-link disabled" href="#">Home</a>
+				<li class="nav-item">
+					<a class="nav-link Disabled rounded-3" style="background-color: lightgrey;" href="<?= $index ?>">Home</a>
 				</li>
 			<?php endif ?>
 			<?php if($address.$posts != $url): // All Posts ?>
-				<li>
+				<li class="nav-item">
 					<a class="nav-link" href="<?= $posts ?>" >Posts</a>
 				</li>
 			<?php else: ?>
-				<li>
-					<a class="nav-link disabled" href="#">Posts</a>
+				<li class="nav-item">
+					<a class="nav-link Disabled rounded-3" style="background-color: lightgrey;" href="<?= $posts ?>">Posts</a>
 				</li>
-			<?php endif ?>
-			
-			<?php if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): // Login / Logout ?>
-				<?php if($address.$login != $url): ?>
-					<li>
-						<a class="nav-link" href="<?= $logout ?>">Logout</a>
-					</li>
-				<?php else: ?>
-					<li>
-						<a class="nav-link disabled" href="#">Logout</a>
-					</li>
-				<?php endif ?>
-			<?php else: ?>
-				<?php if($address.$login != $url): ?>
-					<li>
-						<a class="nav-link" href="<?= $login ?>">Login</a>
-					</li>
-				<?php else: ?>
-					<li>
-						<a class="nav-link disabled" href="#">Login</a>
-					</li>
-				<?php endif ?>
 			<?php endif ?>
 
 			<?php if($_SESSION['role'] == 1 || $_SESSION['role'] == 2): // Admin User settings ?>
 				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Admin Controls</a>
-					<ul class="dropdown-menu">
-						<?php if($address.$user_controls != $url): ?>
-							<li>
-								<a class="nav-link" href="<?= $user_controls ?>">User Controls</a>
-							</li>
-						<?php else: ?>
-							<li>
-								<a class="nav-link disabled" href="#">User Controls</a>
-							</li>
-						<?php endif ?>
-						<?php if($address.$subject_controls != $url): ?>
-							<li>
-								<a class="nav-link" href="<?= $subject_controls ?>">Subject Controls</a>
-							</li>
-						<?php else: ?>
-							<li>
-								<a class="nav-link disabled" href="#">Subject Controls</a>
-							</li>
-						<?php endif ?>
+					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+						Admin Controls
+					</a>
+					<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<li><a class="dropdown-item" href="<?= $user_controls ?>">User Controls</a></li>
+						<li><a class="dropdown-item" href="<?= $subject_controls ?>">Subject Controls</a></li>
 						<?php if($address.$images != $url): ?>
-							<li>
-								<a class="nav-link" href="images.php">images</a>
-							</li>
+							<li><a class="dropdown-item" href="images.php">images</a></li>
 						<?php endif ?>
 					</ul>
 				</li>
-				
 			<?php endif ?>
 		</ul>
-		
-	</div>
+		<?php if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): // Login / Logout ?>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item dropdown">
+        			<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+        				<?= htmlspecialchars($_SESSION["username"]) ?>
+    				</a>
+        			<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+        	  			<li><a class="dropdown-item" href="logout.php">Logout</a></li>
+        	  			<li><a class="dropdown-item" href="reset-password.php">Reset Password</a></li>
+        			</ul>
+        		</li>
+			</ul>
+		<?php else: ?>
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item"><a class="nav-link" href="<?= $login ?>">Sign In</a></li>
+			</ul>
+		<?php endif ?>
+    </div>
+  </div>
 </nav>

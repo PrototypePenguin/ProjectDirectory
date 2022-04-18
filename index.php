@@ -31,17 +31,12 @@
  	<title>Home of fantastic mcu content - The Watcher</title>
  </head>
  <body>
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <h1>The Watcher: An MCU Fansite</h1>
-            </div>
-        </div>
+    <div class="container mb-1">
         <div class="row">
             <?php require("nav.php"); ?>
         </div>
         <div class="row" style="height: 500px;">
-            <div class="col-sm-6">
+            <div class="col-sm-6" style="margin-bottom: 4px;">
                 <div id="latest_posts" class="carousel slide" data-bs-ride="carousel">
                     <!-- Indicators -->
                     <div class="carousel-indicators">
@@ -108,9 +103,10 @@
                     <span class="carousel-control-next-icon"></span>
                 </button>
             </div>
-            <div class="col-sm-6">
+            <div class="col-sm-6 mb-1">
                 <h2>A New Way to Keep Up With an Ever Expanding Universe</h2>
                 <p>Here at The Watcher we pride ourselves on providing the best information on the comings and goings of the wonderful Marvel Cinimatic Universe.</p>
+                <h2><a class="text-decoration-none text-body" href="posts.php">Find the latest movie news, character bios, and more!</a></h2>
             </div>
         </div>
     </div>

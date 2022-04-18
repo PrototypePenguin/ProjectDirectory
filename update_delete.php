@@ -191,15 +191,24 @@
             <form action="update_delete.php?PostID=<?= $_GET['PostID'] ?>" method="post">
                 <div class="mb-3 mt-3">
                     <label for="PostTitle" class="form-label">Title:</label>
-                    <input type="text" class="form-control" id="PostTitle" name="PostTitle" value="<?= $quote['PostTitle'] ?>" autofocus>
+                    <input type="text" class="form-control" id="PostTitle" name="PostTitle" value="<?= $quote['PostTitle'] ?>" autofocus required>
+                    <div class="invalid-feedback">
+                        Please provide a valid Title.
+                    </div>
                 </div>
                 <div class="mb-3 mt-3">
                     <label for="PostCategory" class="form-label">Category:</label>
-                    <input type="text" class="form-control" id="PostCategory" name="PostCategory" value="<?= $quote['PostCategory'] ?>">
+                    <input type="text" class="form-control" id="PostCategory" name="PostCategory" value="<?= $quote['PostCategory'] ?>" required>
+                    <div class="invalid-feedback">
+                        Please provide a valid Category.
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="PostContent" class="form-label">Content:</label>
-                    <textarea class="form-control" id="PostContent" name="PostContent" rows="5"><?= $quote['PostContent'] ?></textarea>
+                    <textarea class="form-control" id="PostContent" name="PostContent" rows="5" required><?= $quote['PostContent'] ?></textarea>
+                    <div class="invalid-feedback">
+                        Please provide valid content for this post.
+                    </div>
                 </div>
                 <div class="mb-3">
                     <label for="PostDesc" class="form-label">Snippet:</label>

@@ -130,36 +130,44 @@
     </style>
 </head>
 <body>
-	<?php include("nav.php"); ?>
-    <div class="wrapper">
-        <h2>Sign Up</h2>
-        <p>Please fill this form to create an account.</p>
-        <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
-			<div class="form-group">
-				<label for="email">Email</label>
-				<input type="text" name="email" class="form-control <?= (!empty($email_err)) ? 'is-invalid' : '' ?>" value="<?= $email ?>">
-			</div>
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" name="username" class="form-control <?= (!empty($username_err)) ? 'is-invalid' : '' ?>" value="<?= $username; ?>">
-                <span class="invalid-feedback"><?= $username_err ?></span>
-            </div>    
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" name="password" class="form-control <?= (!empty($password_err)) ? 'is-invalid' : '' ?>" value="<?= $password; ?>">
-                <span class="invalid-feedback"><?= $password_err ?></span>
-            </div>
-            <div class="form-group">
-                <label for="confirm_password">Confirm Password</label>
-                <input type="password" name="confirm_password" class="form-control <?= (!empty($confirm_password_err)) ? 'is-invalid' : '' ?>" value="<?= $confirm_password; ?>">
-                <span class="invalid-feedback"><?= $confirm_password_err ?></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="reset" class="btn btn-secondary ml-2" value="Reset">
-            </div>
-            <p>Already have an account? <a href="login.php">Login here</a>.</p>
-        </form>
-    </div>    
+	<div class="container">
+		<div class="row">
+			<?php include("nav.php"); ?>
+		</div>
+		<div class="row">
+			<div class="col-sm-6">
+		        <h2>Sign Up</h2>
+		        <p>Please fill this form to create an account.</p>
+		        <form action="<?= htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post">
+					<div class="mb-3 mt-3">
+						<label for="email">Email</label>
+						<input type="text" name="email" class="form-control <?= (!empty($email_err)) ? 'is-invalid' : '' ?>" value="<?= $email ?>">
+					</div>
+		            <div class="mb-3">
+		                <label for="username">Username</label>
+		                <input type="text" name="username" class="form-control <?= (!empty($username_err)) ? 'is-invalid' : '' ?>" value="<?= $username; ?>">
+		                <span class="invalid-feedback"><?= $username_err ?></span>
+		            </div>    
+		            <div class="mb-3">
+		                <label for="password">Password</label>
+		                <input type="password" name="password" class="form-control <?= (!empty($password_err)) ? 'is-invalid' : '' ?>" value="<?= $password; ?>">
+		                <span class="invalid-feedback"><?= $password_err ?></span>
+		            </div>
+		            <div class="mb-3">
+		                <label for="confirm_password">Confirm Password</label>
+		                <input type="password" name="confirm_password" class="form-control <?= (!empty($confirm_password_err)) ? 'is-invalid' : '' ?>" value="<?= $confirm_password; ?>">
+		                <span class="invalid-feedback"><?= $confirm_password_err ?></span>
+		            </div>
+		            <div class="mb-3">
+		                <input type="submit" class="btn btn-primary" value="Submit">
+		                <input type="reset" class="btn btn-secondary ml-2" value="Reset">
+		            </div>
+		            <p>Already have an account? <a href="login.php">Login here</a>.</p>
+		        </form>
+		    </div>   
+		</div>
+	</div>
+	
+     
 </body>
 </html>

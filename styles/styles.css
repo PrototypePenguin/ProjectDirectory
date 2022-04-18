@@ -1,3 +1,24 @@
+/*Colour Palette*/
+html { 
+  margin: 0px;
+  height: 100%;
+}
+body {
+  margin: 0;
+  height: 100%;
+  background-color: #160026;
+}
+
+.container {
+  margin-bottom: 0;
+  min-height: 100%;
+  background-color: whitesmoke;
+}
+
+.col-sm-6 {
+  background-color: whitesmoke;
+}
+
 /*Positioning for uniform carousel controls*/
 .carousel-control-prev {
   left: 0%;
@@ -6,7 +27,7 @@
 }
 .carousel-control-next {
   right: -85%;
-  top: -50%;
+  top: -48%;
   position: relative;
 }
 

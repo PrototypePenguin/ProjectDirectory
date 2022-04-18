@@ -53,11 +53,17 @@
             <form action="insert.php" method="post">
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostTitle">Title:</label>
-                  <input class="form-control" type="text" id="PostTitle" name="PostTitle" value="<?= (isset($_COOKIE['PostTitle']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?>" autofocus>
+                  <input class="form-control" type="text" id="PostTitle" name="PostTitle" value="<?= (isset($_COOKIE['PostTitle']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?>" autofocus required>
+                  <div class="invalid-feedback">
+                     Please provide a valid Title.
+                  </div>
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostCategory">Post Type:</label>
-                  <input class="form-control" type="text" id="PostCategory" name="PostCategory" value="<?= (isset($_COOKIE['PostCategory']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?>">
+                  <input class="form-control" type="text" id="PostCategory" name="PostCategory" value="<?= (isset($_COOKIE['PostCategory']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?>" required>
+                  <div class="invalid-feedback">
+                     Please provide a valid Category.
+                  </div>
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostDesc">Post Description:</label>
@@ -65,7 +71,10 @@
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostContent">Content:</label>
-                  <textarea class="form-control" id="PostContent" name="PostContent" rows="5" cols="50"> <?= (isset($_COOKIE['PostContent']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?></textarea>
+                  <textarea class="form-control" id="PostContent" name="PostContent" rows="5" cols="50" required> <?= (isset($_COOKIE['PostContent']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?></textarea> 
+                  <div class="invalid-feedback">
+                     Please provide valid content for your post.
+                  </div>
                </div>
                <div class="mb-3">
                   <label for="PostSubject" class="form-label">Subject:</label>
@@ -113,8 +122,6 @@
                         <?php while($row = $statement_img->fetch()): ?>
                            <option value="<?= $row['ImageID'] ?>" id="ImageID"
                               <?php if(isset($_SESSION['form_success']) && isset($_SESSION['ImageID'] ) && ($_SESSION['ImageID'] != "") && $_SESSION['form_success'] == "images" && $_SESSION['ImageID'] == $row['ImageID']): ?>
-                                 selected=""
-                              <?php elseif((!isset($_SESSION['ImageID']) || $_SESSION['ImageID'] == null) && $row['ImageID'] == $quote['ImageID']): ?>
                                  selected=""
                               <?php endif ?>
                               >
