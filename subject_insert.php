@@ -21,8 +21,8 @@ session_start();
 
         $_SESSION['form_success'] = "subject";
 
-        if (!empty($_COOKIE['Source'])) {
-            header("location: ".$_COOKIE['Source']);
+        if (!empty($_COOKIE['Destination'])) {
+            header("location: ".$_COOKIE['Destination']);
         } else {
             header("location: subject_controls.php");
         }

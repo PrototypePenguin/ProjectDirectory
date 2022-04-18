@@ -298,7 +298,7 @@
             </form>
             <?php endif ?>
         </div>
-        <?php if($_SESSION['form_success'] != false): ?>
+        <?php if(isset($_SESSION['form_success']) && $_SESSION['form_success'] != false): ?>
             <div class="alert alert-success alert-dismissible fixed-bottom">
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 <strong>Success!</strong> Your <?= ($_SESSION['form_success'] == "images" ? "image" : "") ?> <?= ($_SESSION['form_success'] == "subject" ? "subject" : "") ?> was           successfully uploaded.

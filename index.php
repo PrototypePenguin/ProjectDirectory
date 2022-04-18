@@ -34,7 +34,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
-                <h1>The Watcher: A MCU Fansite</h1>
+                <h1>The Watcher: An MCU Fansite</h1>
             </div>
         </div>
         <div class="row">

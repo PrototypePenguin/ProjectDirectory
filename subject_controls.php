@@ -5,7 +5,7 @@
     require ('values.php');     //Contains constant values identified with VALUE_
 
 
-    if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id){
+    if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id){
         if ($_POST && !empty($_POST['subject'])) {
             $query = "SELECT * FROM subjects WHERE INSTR(Subject, :Subject) <> 0";
 
@@ -68,9 +68,9 @@
                         <tbody>
                             <?php while($row = $statement->fetch()): ?>
                                 <tr>
-                                        <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="nav-link text-decoration-none text-body"><?= $row['SubjectID'] ?></a></td>
-                                        <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="nav-link text-decoration-none text-body"><?= $row['Subject'] ?></a></td>
-                                        <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>">edit</a></td>
+                                    <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="nav-link text-decoration-none text-body"><?= $row['SubjectID'] ?></a></td>
+                                    <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>" class="nav-link text-decoration-none text-body"><?= $row['Subject'] ?></a></td>
+                                    <td><a href="subject_edit.php?SubjectID=<?= $row['SubjectID'] ?>">edit</a></td>
                                 </tr>
                             <?php endwhile ?>
                         </tbody>

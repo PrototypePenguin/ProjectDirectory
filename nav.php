@@ -14,48 +14,61 @@
         $_SESSION['role'] = 0;
     }
 
-    setcookie("Source", basename($_SERVER['REQUEST_URI']));
+    //Store current and last page for redirects on image and subject upload
+	$url = $_SERVER['REQUEST_URI'];
+
+	setcookie("Destination", $_COOKIE['Source']);
+	setcookie("Source", basename($url));
+
+	//Clears form cookies if not needed
+	if (isset($_COOKIE['Source']) && $_COOKIE['Source'] != $images || $_COOKIE['Source'] != $subject_controls) {
+		setcookie("PostTitle", "");
+		setcookie("PostCategory", "");
+		setcookie("PostDesc", "");
+		setcookie("PostSubject", "");
+		setcookie("PostContent", "");
+	}
  ?>
 <nav class="navbar navbar-expand-sm bg-light">
 	<div class="container-fluid">
 		<ul class="navbar-nav">
-			<?php if($address.$index != $_SERVER['REQUEST_URI']): // Home Page ?>
+			<?php if($address.$index != $url): // Home Page ?>
 				<li>
 					<a class="nav-link" href="<?= $index ?>" >Home</a>
 				</li>
 			<?php else: ?>
 				<li>
-					<a class="nav-link" href="#">Home</a>
+					<a class="nav-link disabled" href="#">Home</a>
 				</li>
 			<?php endif ?>
-			<?php if($address.$posts != $_SERVER['REQUEST_URI']): // All Posts ?>
+			<?php if($address.$posts != $url): // All Posts ?>
 				<li>
 					<a class="nav-link" href="<?= $posts ?>" >Posts</a>
 				</li>
 			<?php else: ?>
 				<li>
-					<a class="nav-link" href="#">Posts</a>
+					<a class="nav-link disabled" href="#">Posts</a>
 				</li>
 			<?php endif ?>
 			
 			<?php if(isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): // Login / Logout ?>
-				<?php if($address.$login != $_SERVER['REQUEST_URI']): ?>
+				<?php if($address.$login != $url): ?>
 					<li>
 						<a class="nav-link" href="<?= $logout ?>">Logout</a>
 					</li>
 				<?php else: ?>
 					<li>
-						<a class="nav-link" href="#">Logout</a>
+						<a class="nav-link disabled" href="#">Logout</a>
 					</li>
 				<?php endif ?>
 			<?php else: ?>
-				<?php if($address.$login != $_SERVER['REQUEST_URI']): ?>
+				<?php if($address.$login != $url): ?>
 					<li>
 						<a class="nav-link" href="<?= $login ?>">Login</a>
 					</li>
 				<?php else: ?>
 					<li>
-						<a class="nav-link" href="#">Login</a>
+						<a class="nav-link disabled" href="#">Login</a>
 					</li>
 				<?php endif ?>
 			<?php endif ?>
@@ -64,25 +77,25 @@
 				<li class="nav-item dropdown">
 					<a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Admin Controls</a>
 					<ul class="dropdown-menu">
-						<?php if($address.$user_controls != $_SERVER['REQUEST_URI']): ?>
+						<?php if($address.$user_controls != $url): ?>
 							<li>
 								<a class="nav-link" href="<?= $user_controls ?>">User Controls</a>
 							</li>
 						<?php else: ?>
 							<li>
-								<a class="nav-link" href="#">User Controls</a>
+								<a class="nav-link disabled" href="#">User Controls</a>
 							</li>
 						<?php endif ?>
-						<?php if($address.$subject_controls != $_SERVER['REQUEST_URI']): ?>
+						<?php if($address.$subject_controls != $url): ?>
 							<li>
 								<a class="nav-link" href="<?= $subject_controls ?>">Subject Controls</a>
 							</li>
 						<?php else: ?>
 							<li>
-								<a class="nav-link" href="#">Subject Controls</a>
+								<a class="nav-link disabled" href="#">Subject Controls</a>
 							</li>
 						<?php endif ?>
-						<?php if($address.$images != $_SERVER['REQUEST_URI']): ?>
+						<?php if($address.$images != $url): ?>
 							<li>
 								<a class="nav-link" href="images.php">images</a>
 							</li>

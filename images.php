@@ -94,11 +94,11 @@
 					$_SESSION['ImageID'] = $quote['ImageID'];
 
 					// Return to the page that called the form
-					if (!isset($_COOKIE['Source']) || $_COOKIE['Source'] == null) {
+					if (!isset($_COOKIE['Destination']) || $_COOKIE['Destination'] == null) {
 						header("location: index.php");
 					}
 					else {
-						$source = $_COOKIE['Source'];
+						$source = $_COOKIE['Destination'];
 						header("location: ".$source);
 					}
 					
@@ -126,6 +126,9 @@
  </head>
  <body>
  	<div class="container">
+ 		<div class="row">
+ 			<?php include("nav.php"); ?>
+ 		</div>
  		<div class="row">
  			<div class="col-sm-6">
  				<h2>Image Upload</h2>

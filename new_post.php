@@ -53,36 +53,38 @@
             <form action="insert.php" method="post">
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostTitle">Title:</label>
-                  <input class="form-control" type="text" id="PostTitle" name="PostTitle" value="<?= (isset($_COOKIE['PostTitle']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?>" autofocus>
+                  <input class="form-control" type="text" id="PostTitle" name="PostTitle" value="<?= (isset($_COOKIE['PostTitle']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?>" autofocus>
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostCategory">Post Type:</label>
-                  <input class="form-control" type="text" id="PostCategory" name="PostCategory" value="<?= (isset($_COOKIE['PostCategory']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?>">
+                  <input class="form-control" type="text" id="PostCategory" name="PostCategory" value="<?= (isset($_COOKIE['PostCategory']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?>">
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostDesc">Post Description:</label>
-                  <input class="form-control" type="text" id="PostDesc" name="PostDesc" value="<?= (isset($_COOKIE['PostDesc']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?>">
+                  <input class="form-control" type="text" id="PostDesc" name="PostDesc" value="<?= (isset($_COOKIE['PostDesc']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?>">
                </div>
                <div class="mb-3 mt-3">
                   <label class="form-label" for="PostContent">Content:</label>
-                  <textarea class="form-control" id="PostContent" name="PostContent" rows="5" cols="50"> <?= (isset($_COOKIE['PostContent']) && isset($_COOKIE['Source']) && ($_COOKIE['Source'] == 'images.php' || $_COOKIE['Source'] == 'subject_controls.php') ? $_COOKIE['PostTitle'] : "") ?></textarea>
+                  <textarea class="form-control" id="PostContent" name="PostContent" rows="5" cols="50"> <?= (isset($_COOKIE['PostContent']) && isset($_COOKIE['Destination']) && ($_COOKIE['Destination'] == basename($_SERVER['REQUEST_URI'])) ? $_COOKIE['PostTitle'] : "") ?></textarea>
                </div>
                <div class="mb-3">
                   <label for="PostSubject" class="form-label">Subject:</label>
                   <div class="input-group">
-                     <button class="btn btn-primary" type="button" onclick="Subject()">New Subject</button>
-                     <script>
-                        function Subject() {
-                           //Keeps items from disapearing when user decides to add an image.
-                           document.cookie = "PostTitle=" + document.getElementById("PostTitle").value + ";";
-                           document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
-                           document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
-                           document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
-                           document.cookie = "Source=new_post.php";
+                     <?php if($_SESSION['role'] == $VALUES_administrator_id || $_SESSION['role'] == $VALUES_moderator_id || $_SESSION['role'] == $VALUES_writer_id): ?>
+                        <button class="btn btn-primary" type="button" onclick="Subject()">New Subject</button>
+                        <script>
+                           function Subject() {
+                              //Keeps items from disapearing when user decides to add an image.
+                              document.cookie = "PostTitle=" + document.getElementById("PostTitle").value + ";";
+                              document.cookie = "PostCategory=" + document.getElementById("PostCategory").value + ";";
+                              document.cookie = "PostDesc=" + document.getElementById("PostDesc").value + ";";
+                              document.cookie = "PostContent=" + document.getElementById("PostContent").value + ";";
+                              document.cookie = "Source=new_post.php";
 
-                           window.location = "subject_controls.php";
-                        }
-                     </script>
+                              window.location = "subject_controls.php";
+                           }
+                        </script>
+                     <?php endif ?>
                      <select multiple class="form-select" name="PostSubject[]">
                         <?php while ($row = $statement_subject->fetch()): ?>
                            <option value="<?= $row['SubjectID'] ?>" id="PostSubject"><?= $row['Subject'] ?></option>
@@ -109,26 +111,50 @@
                      </script>
                      <select class="form-select" name="ImageID">
                         <?php while($row = $statement_img->fetch()): ?>
-                           <option value="<?= $row['ImageID'] ?>" id="ImageID"><?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?></option>
+                           <option value="<?= $row['ImageID'] ?>" id="ImageID"
+                              <?php if(isset($_SESSION['form_success']) && isset($_SESSION['ImageID'] ) && ($_SESSION['ImageID'] != "") && $_SESSION['form_success'] == "images" && $_SESSION['ImageID'] == $row['ImageID']): ?>
+                                 selected=""
+                              <?php elseif((!isset($_SESSION['ImageID']) || $_SESSION['ImageID'] == null) && $row['ImageID'] == $quote['ImageID']): ?>
+                                 selected=""
+                              <?php endif ?>
+                              >
+                              <?php if($row['ImagePath'] == ""): ?>
+                                 No Image
+                              <?php else: ?>
+                                 <?= substr($row['ImagePath'], strpos($row['ImagePath'], '/')+1) ?>
+                              <?php endif ?>
+                           </option>
                         <?php endwhile ?>
                      </select>
+                     <button class="btn btn-primary" id="delete_image_button" value="" type="button" onclick="ImageDelete()">Delete</button>
+                     <script>
+                         function getSelectedValue() {
+                             let selectedValue = document.getElementById('ImageIDSelect').value;
+                             return selectedValue;
+                         }
+                         function ImageDelete() {
+                             //Stores form data in cookies so that off page forms don't undo progress
+                             StoreFormCookies();
+                             
+                             //onchange on the select ImageID sets the button value to the current index
+                             let selectValue = getSelectedValue();
+
+                             if(confirm("Are you sure you want to delete ImageID: " + selectValue) == true && selectValue != 6){
+                                 document.cookie = "ImageIDDelete=" + selectValue;
+                                 window.location = "image_delete.php";
+                             } else if (selectValue == 6) {
+                                 alert("You cannot delete the blank image.");
+                             }
+                         }
+                     </script>
                   </div>
                </div>
                <input class="form-control" id="UserID" type="hidden" name="UserID" value="<?= $_SESSION['id'] ?>">
                <input class="btn btn-primary" type="submit" value="Submit">
             </form>
-            <script>
-                  //Delete Cookies after page has loaded so that the page does not perpetually have the same data.
-                  document.cookie = "PostTitle=";
-                  document.cookie = "PostCategory=";
-                  document.cookie = "PostDesc=";
-                  document.cookie = "PostSubject=";
-                  document.cookie = "PostContent=";
-                  document.cookie = "Source=";
-            </script>
          </div>
       </div>
-      <?php if($_SESSION['form_success'] != false): ?>
+      <?php if(isset($_SESSION['form_success']) && $_SESSION['form_success'] != false): ?>
          <div class="alert alert-success alert-dismissible fixed-bottom">
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             <strong>Success!</strong> Your <?= ($_SESSION['form_success'] == "images" ? "image" : "") ?> <?= ($_SESSION['form_success'] == "subject" ? "subject" : "") ?> was successfully uploaded.
