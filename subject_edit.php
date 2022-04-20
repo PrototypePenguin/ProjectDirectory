@@ -9,7 +9,8 @@
 
 		$statement = $db->prepare($query);
 
-		$statement->bindValue(":SubjectID", $_GET['SubjectID'], PDO::PARAM_STR);
+		$subjectID = filter_input(INPUT_GET, $_GET['SubjectID'], FILTER_SANITIZE_NUMBER_INT);
+		$statement->bindValue(":SubjectID", $subjectID, PDO::PARAM_INT);
 
 		$statement->execute();
 

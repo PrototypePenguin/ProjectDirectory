@@ -44,7 +44,7 @@
         <?php if($statement->rowCount() != 0): ?>
             <?= $quote['PostTitle'] ?>
         <?php endif ?>
-         - The Watcher
+        The Watcher - 
     </title>
  </head>
  <body>
@@ -57,9 +57,7 @@
                 <div class="col-sm-6">
                     <img class="img-fluid" src="<?= $quote['ImagePath'] ?>" alt="<?= $quote['PostTitle'] ?>">
                 </div>
-            </div>
         <?php endif ?>
-        <div class="row">
             <div class="col-sm-6">
                 <?php if($statement->rowCount() != 0): ?>
                     <div class="posts">
@@ -76,7 +74,5 @@
             </div>
         </div>
     </div>
-    
-
  </body>
  </html>

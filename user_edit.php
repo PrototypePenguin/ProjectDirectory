@@ -9,7 +9,8 @@
 
 		$statement = $db->prepare($query);
 
-		$statement->bindValue(":UserID", $_GET['UserID'], PDO::PARAM_STR);
+		filter_input(INPUT_GET, $_GET['UserID'], FILTER_SANITIZE_NUMBER_INT);
+		$statement->bindValue(":UserID", $_GET['UserID'], PDO::PARAM_INT);
 
 		$statement->execute();
 

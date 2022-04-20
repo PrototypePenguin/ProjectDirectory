@@ -17,16 +17,20 @@
     //Store current and last page for redirects on image and subject upload
 	$url = $_SERVER['REQUEST_URI'];
 
-	setcookie("Destination", $_COOKIE['Source']);
+	if(isset($_COOKIE) && isset($_COOKIE['Source'])) {
+		setcookie("Destination", $_COOKIE['Source']);
+	}
 	setcookie("Source", basename($url));
 
 	//Clears form cookies if not needed
-	if (isset($_COOKIE['Source']) && $_COOKIE['Source'] != $images || $_COOKIE['Source'] != $subject_controls) {
+	if (isset($_COOKIE) && isset($_COOKIE['Source'])) {
+		if ($_COOKIE['Source'] != $images || $_COOKIE['Source'] != $subject_controls) {
 		setcookie("PostTitle", "");
 		setcookie("PostCategory", "");
 		setcookie("PostDesc", "");
 		setcookie("PostSubject", "");
 		setcookie("PostContent", "");
+		}
 	}
  ?>
 <div class="col-sm-6 p-3">
